@@ -15,6 +15,15 @@ let opts = {
       name: "UploadFile",
       component: () => import("../views/UploadFile.vue"),
     },
+    {
+      path: "/viewlabeling/:id",
+      name: "ViewLabeling",
+      component: () => import("../views/ViewLabeling.vue"),
+      meta: {
+        requiresAuth: false,
+      },
+      props : true,
+    },
   ],
   linkExactActiveClass: "active",
 };
