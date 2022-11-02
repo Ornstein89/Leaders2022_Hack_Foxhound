@@ -2,7 +2,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from beanie import Document
+import pymongo
+from beanie import Document, Indexed
 from pydantic import BaseModel, Field
 
 
@@ -30,7 +31,7 @@ class Location(BaseModel):
 
 class File(Document):
     path: str
-    name: str
+    name: Indexed(str, pymongo.TEXT)
     dttm_created: datetime = Field(default_factory=datetime.now)
     dttm_updated: datetime = Field(default_factory=datetime.now)
     preview: Optional[str]

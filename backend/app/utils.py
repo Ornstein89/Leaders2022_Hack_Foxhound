@@ -1,5 +1,4 @@
 from typing import Optional, Type, TypeVar, cast
-from uuid import uuid4
 
 from beanie import Document, PydanticObjectId
 from fastapi import HTTPException, status
@@ -17,7 +16,3 @@ async def get_or_404(
             detail=error_msg or "Не найдено",
         )
     return cast(type(model), obj)
-
-
-def generate_file_path() -> str:
-    return f"/media/files/{uuid4()}"

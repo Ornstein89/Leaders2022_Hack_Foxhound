@@ -7,7 +7,7 @@
       :items-per-page="-1"
       class="elevation-1"
       fixed-header
-      height="89vh"
+      height="80vh"
       :loading="loading"
       must-sort
       :sort-by.sync="order"
@@ -63,10 +63,8 @@
       <template v-slot:item.dttm_updated="{ item }">
         <span>{{ getDate(item.dttm_updated) }}</span>
       </template>
-      <template v-slot:body.append>
-        <v-card v-intersect="fetchData" v-if="!allDataLoaded"
-          ><v-card-title></v-card-title
-        ></v-card>
+      <template v-slot:body.append v-if="!loading">
+        <v-card v-intersect="fetchData" v-if="!allDataLoaded"></v-card>
       </template>
     </v-data-table>
   </div>
@@ -168,9 +166,7 @@ export default {
   },
   watch: {
     orderBy() {
-      this.offset = 0;
-      this.allDataLoaded = false;
-      this.items = [];
+      this.doSearch();
     },
   },
 };
