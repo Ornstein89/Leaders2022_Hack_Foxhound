@@ -8,7 +8,7 @@ let opts = {
     {
       path: "/",
       name: "Index",
-      component: () => import("../views/Index.vue"),
+      component: () => import("../views/FilesTable.vue"),
       meta: {
         requiresAuth: false,
       },

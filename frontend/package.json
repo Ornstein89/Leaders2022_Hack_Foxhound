@@ -9,19 +9,21 @@
   },
   "dependencies": {
     "axios": "^0.22.0",
-    "core-js": "^3.6.5",
+    "core-js": "^3.21.1",
     "vue": "^2.7.13",
     "vue-router": "^3.5.2",
     "vuetify": "^2.6.12",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-service": "^5.0.8",
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint": "^8.23.0",
+    "eslint-plugin-vue": "^9.4.0",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
     "vue-cli-plugin-vuetify": "~2.4.3",
@@ -38,9 +40,11 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "vue/valid-v-slot": "off"
+    }
   },
   "browserslist": [
     "> 1%",
