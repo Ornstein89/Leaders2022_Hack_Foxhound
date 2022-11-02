@@ -1,4 +1,5 @@
 import Axios, { AxiosResponse } from "axios";
+import http from ".";
 type TFilters = Record<string, number | string | object | boolean>;
 
 type THttpOptions = {
@@ -17,16 +18,36 @@ type THttpGetOrDeleteItemOptions = {
 type THttpUpdateItemOptions = THttpCreateItemOptions &
   THttpGetOrDeleteItemOptions;
 
-export declare class http {
-  urls: Record<string, string>
-  getFilterValues: (filters: TFilters | undefined) => any
-  getUrl: (url_name: string, id?: number) => string
-  catchError: (error: any, options: THttpOptions) => boolean
-  getHeaders: () => Record<string, string>
-  async getList: <T>(url_name: string, options?: THttpGetListOptions) => Promise<AxiosResponse<T>>
-  async getItem: <T>(url_name: string, options?: THttpGetOrDeleteItemOptions) => Promise<AxiosResponse<T>>
-  async createItem: <T>(url_name: string, options: THttpCreateItemOptions) => Promise<AxiosResponse<T>>
-  async partialUpdateItem: <T>(url_name: string, options: THttpUpdateItemOptions) => Promise<AxiosResponse<T>>
-  async updateItem: <T>(url_name: string, options: THttpUpdateItemOptions) => Promise<AxiosResponse<T>>
-  async deleteItem: <T>(url_name: string, options: THttpGetOrDeleteItemOptions) => Promise<AxiosResponse<T>>
+declare const http: {
+  urls: Record<string, string>;
+  getFilterValues: (filters: TFilters | undefined) => any;
+  getUrl: (url_name: string, id?: number) => string;
+  catchError: (error: any, options: THttpOptions) => boolean;
+  getHeaders: () => Record<string, string>;
+  getList: <T>(
+    url_name: string,
+    options?: THttpGetListOptions
+  ) => Promise<AxiosResponse<T>>;
+  getItem: <T>(
+    url_name: string,
+    options?: THttpGetOrDeleteItemOptions
+  ) => Promise<AxiosResponse<T>>;
+  createItem: <T>(
+    url_name: string,
+    options: THttpCreateItemOptions
+  ) => Promise<AxiosResponse<T>>;
+  partialUpdateItem: <T>(
+    url_name: string,
+    options: THttpUpdateItemOptions
+  ) => Promise<AxiosResponse<T>>;
+  updateItem: <T>(
+    url_name: string,
+    options: THttpUpdateItemOptions
+  ) => Promise<AxiosResponse<T>>;
+  deleteItem: <T>(
+    url_name: string,
+    options: THttpGetOrDeleteItemOptions
+  ) => Promise<AxiosResponse<T>>;
 };
+
+export default http;

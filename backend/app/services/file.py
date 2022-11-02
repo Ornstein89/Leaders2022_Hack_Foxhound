@@ -13,7 +13,7 @@ ORDER_FIELDS = {"dttm_updated", "dttm_created", "name"}
 
 class FileService:
     def generate_file_path(self) -> str:
-        return f"/media/files/{uuid4()}"
+        return f"./media/files/{uuid4()}"
 
     async def create(self, file: UploadFile, name: str) -> database.File:
         path = self.generate_file_path()

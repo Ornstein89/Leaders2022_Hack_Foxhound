@@ -7,11 +7,13 @@ let opts = {
   routes: [
     {
       path: "/",
-      name: "Index",
+      name: "FilesTable",
       component: () => import("../views/FilesTable.vue"),
-      meta: {
-        requiresAuth: false,
-      },
+    },
+    {
+      path: "/create",
+      name: "UploadFile",
+      component: () => import("../views/UploadFile.vue"),
     },
   ],
   linkExactActiveClass: "active",

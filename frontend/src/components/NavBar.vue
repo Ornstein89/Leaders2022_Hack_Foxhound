@@ -2,7 +2,7 @@
   <v-app-bar app>
     <v-app-bar-title
       ><router-link
-        :to="{ name: 'Index' }"
+        :to="{ name: 'FilesTable' }"
         class="text-decoration-none text-dark"
         >FoxHound</router-link
       ></v-app-bar-title

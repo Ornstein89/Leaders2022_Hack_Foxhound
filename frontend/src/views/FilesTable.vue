@@ -26,8 +26,11 @@
             append-outer-icon="mdi-magnify"
             @click:append-outer="doSearch"
             @keyup.enter="doSearch"
-          /> </v-toolbar
-      ></template>
+          />
+          <v-spacer></v-spacer>
+          <v-btn text link :to="{ name: 'UploadFile' }">Загрузить файл</v-btn>
+        </v-toolbar></template
+      >
       <template v-slot:item.preview="{ item }">
         <v-img contain :src="item.preview" height="128" v-if="item.preview" />
       </template>
