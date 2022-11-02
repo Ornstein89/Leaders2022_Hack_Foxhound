@@ -9,8 +9,11 @@
       fixed-header
       height="89vh"
       :loading="loading"
+      @click:row="viewAndLabeling"
     >
-      <template v-slot:item.preview="{ item }">
+      <template
+        v-slot:item.preview="{ item }"
+      >
         <v-img contain :src="item.preview" height="256"></v-img>
       </template>
       <template v-slot:item.download="{ item }">
@@ -58,7 +61,15 @@ export default {
         { text: "Сгенерирован системой", value: "origin_path", align: "center" },
         { text: "Скачать JSON", value: "download", align: "center" },
       ],
-      items: [],
+      items: [
+        {
+          id:1,
+          preview:"1-01.png",
+          download:"1-01.png",
+          is_marked_up:false,
+          origin_path:"1-01.png"
+        }
+      ],
       allDataLoaded: false,
     };
   },
@@ -75,6 +86,14 @@ export default {
       this.offset += 10;
       if (!response.data.length) this.allDataLoaded = true;
       this.loading = false;
+    },
+
+    viewAndLabeling(item){
+      console.log("viewAndLabeling(): row = ", item);
+      this.$router.push({
+        name:"ViewLabeling",
+        params:{id:item.id},
+      })
     },
   },
   computed: {

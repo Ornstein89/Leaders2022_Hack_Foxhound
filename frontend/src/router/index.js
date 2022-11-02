@@ -13,6 +13,15 @@ let opts = {
         requiresAuth: false,
       },
     },
+    {
+      path: "/viewlabeling/:id",
+      name: "ViewLabeling",
+      component: () => import("../views/ViewLabeling.vue"),
+      meta: {
+        requiresAuth: false,
+      },
+      props : true,
+    },
   ],
   linkExactActiveClass: "active",
 };
