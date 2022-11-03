@@ -13,6 +13,7 @@
       :sort-by.sync="order"
       :sort-desc.sync="desc"
       :custom-sort="(items) => items"
+      @click:row="viewAndLabeling"
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -112,7 +113,15 @@ export default {
           sortable: false,
         },
       ],
-      items: [],
+      items: [
+        {
+          id:1,
+          preview:"1-01.png",
+          download:"1-01.png",
+          is_marked_up:false,
+          origin_path:"1-01.png"
+        }
+      ],
       allDataLoaded: false,
     };
   },
@@ -157,6 +166,13 @@ export default {
       this.offset = 0;
       this.allDataLoaded = false;
       this.items = [];
+    },
+    viewAndLabeling(item){
+      console.log("viewAndLabeling(): row = ", item);
+      this.$router.push({
+        name:"ViewLabeling",
+        params:{id:item.id},
+      })
     },
   },
   computed: {
