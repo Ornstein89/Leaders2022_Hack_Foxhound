@@ -1,0 +1,5 @@
+pydicom
+numpy
+pillow
+opencv-python
+scikit-learn
