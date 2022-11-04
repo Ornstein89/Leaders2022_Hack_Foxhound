@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional
 
 import pymongo
-from beanie import Document, Indexed
+from beanie import Document, Indexed, sync
 from pydantic import BaseModel, Field
 
 
@@ -29,11 +29,11 @@ class Location(BaseModel):
     horizontal: HorizontalLocation
 
 
-class File(Document):
+class BaseFile(BaseModel):
     path: str
     name: Indexed(str, pymongo.TEXT)
-    dttm_created: datetime = Field(default_factory=datetime.now)
-    dttm_updated: datetime = Field(default_factory=datetime.now)
+    dttm_created: datetime = Field(default_factory=datetime.utcnow)
+    dttm_updated: datetime = Field(default_factory=datetime.utcnow)
     preview: Optional[str]
     origin_path: Optional[str]
     markup: Optional[dict]
@@ -45,3 +45,11 @@ class File(Document):
 
     class Settings:
         name = "file_collection"
+
+
+class File(Document, BaseFile):
+    ...
+
+
+class FileSync(sync.Document, BaseFile):
+    ...

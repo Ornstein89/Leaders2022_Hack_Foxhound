@@ -152,7 +152,7 @@ export default {
       item.loading = false;
     },
     getDate(date) {
-      return new Date(date).toLocaleString();
+      return new Date(date + "+00:00").toLocaleString();
     },
     doSearch() {
       this.offset = 0;

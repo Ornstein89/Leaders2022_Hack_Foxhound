@@ -10,7 +10,7 @@ services:
       - .env
     volumes:
       - ./data:/data
-      - ./mounts/media:/media
+      - ./mounts/media:/app/media
     ports:
       - 127.0.0.1:8000:8000
     depends_on:
@@ -29,6 +29,30 @@ services:
     build: 
       dockerfile: ./compose/frontend/Dockerfile
       context: .
+    restart: unless-stopped
+
+  dramatiq:
+    build: 
+      dockerfile: ./compose/backend/Dockerfile
+      context: .
+    command: bash -c "dramatiq app.tasks"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+      - ./mounts/media:/app/media
+    depends_on:
+      - db
+      - broker
+
+  broker:
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=${BROKER_USER}
+      - RABBITMQ_DEFAULT_PASS=${BROKER_PASS}
+    ports:
+      - 127.0.0.1:15672:15672
+      - 127.0.0.1:5672:5672
     restart: unless-stopped
 
   nginx:
