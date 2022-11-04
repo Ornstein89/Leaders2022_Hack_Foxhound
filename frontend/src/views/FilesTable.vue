@@ -113,15 +113,7 @@ export default {
           sortable: false,
         },
       ],
-      items: [
-        {
-          id:1,
-          preview:"1-01.png",
-          download:"1-01.png",
-          is_marked_up:false,
-          origin_path:"1-01.png"
-        }
-      ],
+      items: [],
       allDataLoaded: false,
     };
   },
@@ -167,12 +159,11 @@ export default {
       this.allDataLoaded = false;
       this.items = [];
     },
-    viewAndLabeling(item){
-      console.log("viewAndLabeling(): row = ", item);
+    viewAndLabeling(item) {
       this.$router.push({
-        name:"ViewLabeling",
-        params:{id:item.id},
-      })
+        name: "ViewLabeling",
+        params: { id: item.id },
+      });
     },
   },
   computed: {

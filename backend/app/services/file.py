@@ -7,6 +7,7 @@ from fastapi import HTTPException, UploadFile, status
 
 from app import database
 from app.schemes.file import FileList
+from app.services.make_dicom_thumbnail import make_dicom_thumbnail
 
 ORDER_FIELDS = {"dttm_updated", "dttm_created", "name"}
 
@@ -20,7 +21,12 @@ class FileService:
         async with aiofiles.open(path, "wb") as f:
             content = await file.read()
             await f.write(content)
-        return await database.File(path=path, name=name).save()
+        preview_path = None
+        preview = make_dicom_thumbnail(path, (128, 128))
+        if preview is not None:
+            preview_path = self.generate_file_path() + ".png"
+            preview.save(preview_path)
+        return await database.File(path=path, name=name, preview=preview_path).save()
 
     def get_sort(self, field: str) -> dict[str, int]:
         desc = 1

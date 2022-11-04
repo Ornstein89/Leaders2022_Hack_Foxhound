@@ -10,7 +10,7 @@
           :loading="loading"
         />
         <v-file-input
-          accept=".dicom"
+          accept=".dcm"
           label="DICOM файл"
           :rules="rules"
           v-model="file"
@@ -35,6 +35,7 @@ export default Vue.extend({
       rules: [required],
       file: null,
       loading: false,
+      name: "",
     };
   },
   methods: {
@@ -46,9 +47,13 @@ export default Vue.extend({
       form.append("file", this.file);
       form.append("name", this.name);
       try {
-        await axios.post("/api/files/", form);
+        const response = await axios.post("/api/files/", form);
         this.showSnackbar({
           text: "Файл успешно загружен",
+        });
+        this.$router.push({
+          name: "ViewLabeling",
+          params: { id: response.data.id },
         });
       } catch (error) {
         this.showSnackbar({

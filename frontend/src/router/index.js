@@ -19,19 +19,7 @@ let opts = {
       path: "/viewlabeling/:id",
       name: "ViewLabeling",
       component: () => import("../views/ViewLabeling.vue"),
-      meta: {
-        requiresAuth: false,
-      },
-      props : true,
-    },
-    {
-      path: "/viewlabeling/:id",
-      name: "ViewLabeling",
-      component: () => import("../views/ViewLabeling.vue"),
-      meta: {
-        requiresAuth: false,
-      },
-      props : true,
+      props: true,
     },
   ],
   linkExactActiveClass: "active",

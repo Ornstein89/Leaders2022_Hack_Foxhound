@@ -28,12 +28,12 @@ async def get_files(
     return await file_service.get_list(limit, offset, order, search)
 
 
-@router.get("/{id}/", response_model=database.File)
+@router.get("/{id}/", response_model=database.File, response_model_by_alias=False)
 async def get_file(id: PydanticObjectId):
     return await get_or_404(database.File, id, "Файл не найден")
 
 
-@router.get("/{id}/markup/", response_model=database.File)
+@router.get("/{id}/markup/")
 async def get_file_markup(id: PydanticObjectId):
     file = await get_or_404(database.File, id, "Файл не найден")
     if file.markup is None:
@@ -50,7 +50,7 @@ async def get_file_markup(id: PydanticObjectId):
     )
 
 
-@router.post("/", response_model=database.File)
+@router.post("/", response_model=database.File, response_model_by_alias=False)
 async def create_file(
     file: UploadFile, name: str = Body(), file_service: FileService = Depends()
 ):
