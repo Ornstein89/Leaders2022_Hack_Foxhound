@@ -22,16 +22,32 @@
             <v-icon>mdi-magnify</v-icon>
           </v-btn>
 
-          <v-btn class="ma-1" :value="'WindowLevel'">
-            <v-icon>mdi-weather-sunny</v-icon>
-          </v-btn>
-
-          <v-btn class="ma-1" :value="'Scroll'">
-            <v-icon>mdi-contrast-circle</v-icon>
-          </v-btn>
-
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                class="ma-1"
+                :value="'WindowLevel'"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>mdi-brightness-6</v-icon>
+              </v-btn>
+            </template>
+            <span>
+              Яркость и контраст<br>
+              передвигайте мышь с зажатой левой клавишей<br>
+              по горизонтали - контраст<br>
+              по вертикали - яркость
+            </span>
+          </v-tooltip>
           <v-btn class="ma-1" disabled>
             <v-icon>mdi-layers-triple-outline</v-icon>
+          </v-btn>
+        </v-btn-toggle>
+
+        <v-btn-toggle v-model="infoControllerVisible" style="flex-direction: column" tile>
+          <v-btn class="ma-1" :value="true">
+            <v-icon>mdi-information-outline</v-icon>
           </v-btn>
         </v-btn-toggle>
 
@@ -91,6 +107,19 @@
 
           <div id="layerGroup0" class="layerGroup">
             <!-- <div id="dropBox"></div> -->
+            <div id="infoLayer">
+              <div id="infotl" class="infotl info"></div>
+              <div id="infotc" class="infotc infoc"></div>
+              <div id="infotr" class="infotr info"></div>
+              <div id="infocl" class="infocl infoc"></div>
+              <div id="infocr" class="infocr infoc"></div>
+              <div id="infobl" class="infobl info"></div>
+              <div id="infobc" class="infobc infoc"></div>
+              <!-- offset for plot -->
+              <div id="infobr" class="infobr info" style="bottom: 64px"></div>
+              <div id="plot"></div>
+              <div id="infocm"></div>
+            </div>
           </div>
 
           <!-- <div class="legend md-caption">
@@ -135,11 +164,17 @@
           </v-btn>
         </v-btn-toggle>
 
-        <v-btn class="ma-1" tile disabled elevation="0">
+        <v-btn class="ma-1" tile elevation="0"
+          @click="onContoursSave"
+        >
           <v-icon>mdi-content-save</v-icon>
         </v-btn>
 
-        <v-btn class="ma-1" tile disabled elevation="0">
+        <v-checkbox :label="'Авто'" class="text-center"></v-checkbox>
+
+        <v-btn class="ma-1" tile elevation="0"
+          @click="onDownloadJsonClicked"
+        >
           <v-icon>mdi-download</v-icon>
         </v-btn>
 
@@ -172,14 +207,23 @@
   <!-- диалог генерации -->
 </template>
 
+<!-- <script type="text/javascript" src="../components/dwv-jqui/src/gui/infoController.js"></script>
+<script type="text/javascript" src="../components/dwv-jqui/src/gui/infoOverlay.js"></script> -->
 <script>
 import http from "@/http";
 // import dwvVue from 'dwv';
 // import dwvVue from '../components/dwv';
 
 import Vue from "vue";
+import MdButton from "vue-material";
 import dwv from "dwv";
-// import tagsTable from '../components/tags-table.vue'
+// import dwvjq.gui.info.Controller from '../components/dwv-jqui/src/gui/infoController.js'
+// import {InfoController} from '../components/dwv-jqui/src/gui/infoController_copy.js'
+// import {dwvjq} from '../components/dwv-jqui/src/gui/infoOverlay.js'
+// import {dwvjq, startDwvjq} from '../components/dwv-jqui/src/dwv_jquiexport.js'
+
+Vue.use(MdButton);
+
 // gui overrides
 
 // Image decoders (for web workers)
@@ -195,6 +239,7 @@ export default {
   components: {
     // dwvVue,
     // tagsTable,
+    // Controller,
   },
   data() {
     return {
@@ -208,7 +253,16 @@ export default {
         dwv: dwv.getVersion(),
         vue: Vue.version,
       },
-      dwvApp: null,
+
+      dwvApp: null, // библиотека DWV
+      infoController: null, // оверлей с информацией о снимке
+      infoControllerVisible : false, // состояние оверлея с информацией
+      annotations:{
+        objects:[
+          {x:1,y:2},
+        ]}, // объекты разметки для перевода в JSON
+
+      // номенклатура инструментов https://github.com/ivmartel/dwv-jqui/blob/master/src/applauncher.js
       tools: {
         Scroll: {},
         ZoomAndPan: {},
@@ -218,10 +272,7 @@ export default {
           type: "factory",
           events: ["drawcreate", "drawchange", "drawmove", "drawdelete"],
         },
-        // Path:{},
         Livewire: {},
-        // Roi:{},
-        // FreeHand: {},
       },
       toolNames: [],
       selectedTool: "Select Tool",
@@ -233,7 +284,6 @@ export default {
       dropboxClassName: "dropBox",
       borderClassName: "dropBoxBorder",
       hoverClassName: "hover",
-      file: null,
     };
   },
   methods: {
@@ -338,27 +388,62 @@ export default {
         }
       }
     },
+
+    onContoursSave(){
+      // this.annotations = this.dwvApp.getState();
+      // console.log("onContoursSave(): getState = ", this.annotations);
+      
+      this.annotations = this.dwvApp.getDrawDisplayDetails();
+      console.log("onContoursSave(): getDrawDisplayDetails = ", this.annotations);
+      
+      // var y = this.dwvApp.getDrawStoreDetails();
+      // console.log("onContoursSave(): getDrawStoreDetails = ", y);
+      // var json = state.toJSON(app);
+    },
+
+    onDownloadJsonClicked(){
+      this.saveTemplateAsFile("annotations.json", this.annotations);
+    },
+
+    saveTemplateAsFile(filename, dataObjToWrite) {
+      const blob = new Blob([JSON.stringify(dataObjToWrite)], {
+        type: "text/json",
+      });
+      const link = document.createElement("a");
+
+      link.download = filename;
+      link.href = window.URL.createObjectURL(blob);
+      link.dataset.downloadurl = ["text/json", link.download, link.href].join(
+        ":"
+      );
+
+      const evt = new MouseEvent("click", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+      });
+
+      link.dispatchEvent(evt);
+      link.remove();
+    },
   },
-  async mounted() {
-    this.file = (
-      await http.getItem("File", {
-        id: this.$route.params.id,
-        showSnackbar: true,
-      })
-    ).data;
+  mounted() {
     // create app
     this.dwvApp = new dwv.App();
+    console.log("mounted(): this.dwvApp = ", this.dwvApp);
+
     // initialise app
     this.dwvApp.init({
       dataViewConfigs: { "*": [{ divId: "layerGroup0" }] },
       tools: this.tools,
     });
+
     // handle load events
     let nLoadItem = null;
     let nReceivedError = null;
     let nReceivedAbort = null;
     let isFirstRender = null;
-    this.dwvApp.addEventListener("loadstart", (/*event*/) => {
+    this.dwvApp.addEventListener("loadstart", (event) => {
       // reset flags
       this.dataLoaded = false;
       nLoadItem = 0;
@@ -367,6 +452,9 @@ export default {
       isFirstRender = true;
       // hide drop box
       this.showDropbox(false);
+      if (event.loadtype === "image") {
+        // this.infoController.onLoadStart();
+      }
     });
     this.dwvApp.addEventListener("loadprogress", (event) => {
       this.loadProgress = event.loaded;
@@ -410,8 +498,11 @@ export default {
         this.showDropbox(true);
       }
     });
-    this.dwvApp.addEventListener("loaditem", (/*event*/) => {
+    this.dwvApp.addEventListener("loaditem", (event) => {
       ++nLoadItem;
+      if (event.loadtype === "image") {
+        // this.infoController.onLoadItem(event);
+      }
     });
     this.dwvApp.addEventListener("error", (/*event*/) => {
       // console.error('load error', event)
@@ -558,6 +649,100 @@ export default {
 .md-dialog {
   width: 80%;
   height: 90%;
+}
+
+/* Info */
+#infoLayer {
+  position: absolute;
+  pointer-events: none;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+}
+#infoLayer ul {
+  margin: 0;
+  padding: 2px;
+  list-style-type: none;
+}
+#infoLayer li {
+  margin-top: 0;
+}
+#infoLayer canvas {
+  margin: 0;
+  padding: 2px;
+}
+.info {
+  color: #cde;
+  text-shadow: 1px 1px #000;
+  font-size: 80%;
+}
+.infoc {
+  color: #ff0;
+  text-shadow: 1px 1px #000;
+  font-size: 120%;
+}
+.infotl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  text-align: left;
+}
+.infotc {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 50%;
+  text-align: center;
+}
+.infotr {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+.infocl {
+  position: absolute;
+  bottom: 50%;
+  left: 0;
+  text-align: left;
+}
+.infocr {
+  position: absolute;
+  bottom: 50%;
+  right: 2px;
+  text-align: right;
+}
+.infobl {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  text-align: left;
+}
+.infobc {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  right: 50%;
+  text-align: center;
+}
+.infobr {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  text-align: right;
+}
+
+#plot {
+  position: absolute;
+  width: 100px;
+  height: 50px;
+  bottom: 15px;
+  right: 0;
+}
+#infocm {
+  position: absolute;
+  bottom: 5px;
+  right: 0;
 }
 </style>
 <!-- non "scoped" style -->
