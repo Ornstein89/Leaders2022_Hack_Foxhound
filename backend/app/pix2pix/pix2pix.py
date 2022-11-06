@@ -6,7 +6,10 @@ import SimpleITK as sitk
 from lungmask import mask as unet_mask
 from skimage.transform import resize
 from tensorflow.keras.models import model_from_json
-from utils import *
+
+from app.pix2pix.utils import (gray2rgb255, image2gray255, load_dicom,
+                               normalize, read_image, resize, resize_cube,
+                               rgb2gray, unnormalize)
 
 
 class Pix2Pix:
