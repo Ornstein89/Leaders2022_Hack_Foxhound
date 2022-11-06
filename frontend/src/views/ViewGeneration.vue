@@ -9,141 +9,7 @@
 
   <!-- панель управления обзором -->
   <v-row style="height: 100%" no-gutters fill-height>
-    <v-col cols="12" sm="1">
-      <v-card class="fill-height d-flex flex-column ma-1">
-        <v-spacer vertical></v-spacer>
-        <v-tooltip right>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ma-1" tile elevation="0"
-              outlined
-              @click="onReset"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon>mdi-border-radius</v-icon>
-            </v-btn>
-          </template>
-          <span>
-            Сброс параметров вида
-          </span>
-        </v-tooltip>
 
-        <v-btn-toggle v-model="toggle_view" style="flex-direction: column" tile>
-          <v-tooltip right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                class="ma-1" :value="'ZoomAndPan'"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>mdi-magnify</v-icon>
-              </v-btn>
-            </template>
-            <span>
-              Увеличение и пролистывание<br>
-              увеличение - колесо мыши<br>
-              пролистывание - зажать левую клавишу мыши и двигать курсором
-            </span>
-          </v-tooltip>
-
-          <v-tooltip right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ma-1" :value="'Scroll'"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>mdi-layers-triple-outline</v-icon>
-              </v-btn>
-            </template>
-            <span>
-              Пролистывание слоёв DICOM<br>
-              пролистывание - зажать левую клавишу мыши и вести курсором вертикально<br>
-              автопролистывание - двойное нажатие левой клавиши мыши
-            </span>
-          </v-tooltip>
-
-          <v-tooltip right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                class="ma-1"
-                :value="'WindowLevel'"
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>mdi-brightness-6</v-icon>
-              </v-btn>
-            </template>
-            <span>
-              <p class="font-italic">
-                Яркость и контраст<br>
-              </p>
-              <p class="font-italic">
-                передвигайте мышь с зажатой левой клавишей<br>
-                по горизонтали - контраст<br>
-                по вертикали - яркость<br>
-                двойное нажатие - автонастройка по выбранному пикселю
-              </p>
-            </span>
-          </v-tooltip>
-
-        </v-btn-toggle>
-
-        <v-menu
-            top
-            :close-on-click="true"
-            :nudge-width="100"
-            offset-x
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ma-1"
-              tile elevation="0"
-                outlined
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>mdi-form-dropdown</v-icon>
-              </v-btn>
-            </template>
-
-            <v-list dense>
-              <v-list-item-group
-                v-model="selectedStndardWindow"
-                color="primary"
-              >
-              <v-list-item
-                v-for="(item, index) in presetNames"
-                :key="index"
-              >
-                <v-list-item-title
-                  
-                  @click="onSetPreset(item)">
-                  {{ item }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list-item-group>
-            </v-list>
-          </v-menu>
-
-        <v-btn-toggle v-model="infoControllerVisible" style="flex-direction: column" tile>
-          <v-tooltip right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ma-1" tile elevation="0"
-                :value="true"
-                v-bind="attrs" v-on="on"
-              >
-              <v-icon>mdi-information-outline</v-icon>
-              </v-btn>
-            </template>
-            <span>Включение и выключение<br>
-              слоя с информацией<br>
-              (в разработке)
-            </span>
-          </v-tooltip>
-        </v-btn-toggle>
-
-        <v-spacer vertical></v-spacer>
-      </v-card>
-    </v-col>
 
     <v-col cols="12" sm="10">
       <v-card class="fill-height d-flex flex-column ma-1">
@@ -224,7 +90,8 @@
         </div>
       </v-card>
     </v-col>
-    <v-col cols="12" sm="1">
+
+    <v-col cols="12" sm="2">
       <v-card class="fill-height d-flex flex-column ma-1">
         <v-spacer vertical></v-spacer>
 
@@ -391,7 +258,7 @@ dwv.tool.defaultpresets.CT = {
   };
 
 export default {
-  name: "ViewLabeling",
+  name: "ViewGeneration",
   components: {
     // dwvVue,
     // tagsTable,

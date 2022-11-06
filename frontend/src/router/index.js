@@ -21,6 +21,18 @@ let opts = {
       component: () => import("../views/ViewLabeling.vue"),
       props: true,
     },
+    {
+      path: "/viewgenerate/:id",
+      name: "ViewGeneration",
+      component: () => import("../views/ViewGeneration.vue"),
+      props: true,
+    },    
+    // {
+    //   path: "/viewlabeling2/:id",
+    //   name: "ViewLabeling_dwvjqui",
+    //   component: () => import("../views/ViewLabeling_dwvjqui.vue"),
+    //   props: true,
+    // },    
   ],
   linkExactActiveClass: "active",
 };
