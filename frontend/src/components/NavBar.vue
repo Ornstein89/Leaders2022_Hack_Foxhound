@@ -4,7 +4,7 @@
       ><router-link
         :to="{ name: 'FilesTable' }"
         class="text-decoration-none text-dark"
-        >FoxHound</router-link
+        >FoxMed</router-link
       ></v-app-bar-title
     >
 

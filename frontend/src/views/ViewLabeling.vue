@@ -86,17 +86,22 @@
         </v-btn-toggle>
 
         <v-menu top :close-on-click="true" :nudge-width="100" offset-x>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="ma-1"
-              tile
-              elevation="0"
-              outlined
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon>mdi-form-dropdown</v-icon>
-            </v-btn>
+          <template v-slot:activator="{ on: menu, attrs }">
+            <v-tooltip right>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-btn
+                  class="ma-1"
+                  tile
+                  elevation="0"
+                  outlined
+                  v-bind="attrs"
+                  v-on="{ ...tooltip, ...menu }"
+                >
+                  <v-icon>mdi-form-dropdown</v-icon>
+                </v-btn>
+              </template>
+              Стандартные настройки яркости
+            </v-tooltip>
           </template>
 
           <v-list dense>
