@@ -23,16 +23,13 @@ def generate_file(_id: str):
     try:
         if file.generator_type == GeneratorType.pix2pix:
             from app.pix2pix.pix2pix import Pix2Pix
-            from app.pix2pix.utils import slice2rgb, slice2dicom
+            from app.pix2pix.utils import slice2dicom, slice2rgb
 
             generator = Pix2Pix(
                 "/data/generator.h5", "/data/generator.json", "/data/masks/"
             )
             result, _ = generator.inference(file.origin_path)
-            result_path = file_service.save_file_sync(
-                slice2dicom(result[0], original_path=file.origin_path), ext=".png"
-            )
-            preview = result_path
+            result_path = slice2dicom(result[0], original_path=file.origin_path)
         elif file.generator_type == GeneratorType.simple:
             from app.generator_simple import generate_simple_dcm_file
 
@@ -43,12 +40,11 @@ def generate_file(_id: str):
                 file.generation_params["width_px"],
                 file.generation_params["height_px"],
             )
-            preview = file_service.save_file_sync(
-                make_dicom_thumbnail(result_path, (128, 128)), ext=".png"
-            )
 
+        file.preview = file_service.save_file_sync(
+            make_dicom_thumbnail(result_path, (128, 128)), ext=".png"
+        )
         file.paths = [result_path]
-        file.preview = preview
     except Exception:
         file.generation_status = GenerationStatus.error
         file.save()
