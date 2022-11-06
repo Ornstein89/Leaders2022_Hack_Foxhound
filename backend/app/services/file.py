@@ -1,6 +1,6 @@
+import inspect
 from typing import Optional, Union
 from uuid import uuid4
-import inspect
 
 import aiofiles
 from beanie.odm.operators.find.evaluation import RegEx

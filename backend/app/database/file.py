@@ -24,6 +24,12 @@ class HorizontalLocation(str, Enum):
     bottom = "Нижняя"
 
 
+class GenerationStatus(str, Enum):
+    error = "error"
+    processing = "processing"
+    ready = "ready"
+
+
 class Location(BaseModel):
     vertical: VerticalLocation
     horizontal: HorizontalLocation
@@ -42,6 +48,7 @@ class BaseFile(BaseModel):
     generator_type: Optional[str]
     size: Optional[int]
     location: Optional[Location]
+    generation_status: Optional[GenerationStatus]
 
     class Settings:
         name = "file_collection"

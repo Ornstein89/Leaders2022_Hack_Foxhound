@@ -13,7 +13,6 @@
       :sort-by.sync="order"
       :sort-desc.sync="desc"
       :custom-sort="(items) => items"
-      @click:row="viewAndLabeling"
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -35,15 +34,38 @@
       <template v-slot:item.preview="{ item }">
         <v-img contain :src="item.preview" height="128" v-if="item.preview" />
       </template>
-      <template v-slot:item.download="{ item }">
-        <v-btn
-          icon
-          :disabled="!item.is_marked_up"
-          @click="downloadMarkup(item)"
-          :loading="item.loading"
-        >
-          <v-icon class="mr-2"> mdi-download </v-icon>
-        </v-btn>
+      <template v-slot:item.actions="{ item }">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              :disabled="!item.is_marked_up"
+              @click="downloadMarkup(item)"
+              :loading="item.loading"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon> mdi-download </v-icon>
+            </v-btn>
+          </template>
+          <span>Скачать разметку</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon @click="viewAndLabeling(item)" v-bind="attrs" v-on="on">
+              <v-icon> mdi-eye </v-icon>
+            </v-btn>
+          </template>
+          <span>Просмотреть файл</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon @click="viewGenerate(item)" v-bind="attrs" v-on="on">
+              <v-icon> mdi-autorenew </v-icon>
+            </v-btn>
+          </template>
+          <span>Генерация</span>
+        </v-tooltip>
       </template>
       <template v-slot:item.is_marked_up="{ item }">
         <v-icon class="mr-2" :color="item.is_marked_up ? 'green' : 'red'">
@@ -54,10 +76,10 @@
           }}
         </v-icon>
       </template>
-      <template v-slot:item.origin_paths="{ item }">
-        <v-icon class="mr-2" :color="item.origin_paths ? 'green' : 'red'">
+      <template v-slot:item.origin_path="{ item }">
+        <v-icon class="mr-2" :color="item.origin_path ? 'green' : 'red'">
           {{
-            item.origin_paths
+            item.origin_path
               ? "mdi-checkbox-marked-circle"
               : "mdi-close-circle"
           }}
@@ -104,13 +126,13 @@ export default {
         },
         {
           text: "Сгенерирован системой",
-          value: "origin_paths",
+          value: "origin_path",
           align: "center",
           sortable: false,
         },
         {
-          text: "Скачать JSON",
-          value: "download",
+          text: "Действия",
+          value: "actions",
           align: "center",
           sortable: false,
         },
@@ -164,6 +186,12 @@ export default {
     viewAndLabeling(item) {
       this.$router.push({
         name: "ViewLabeling",
+        params: { id: item.id },
+      });
+    },
+    viewGenerate(item) {
+      this.$router.push({
+        name: "ViewGenerationSetup",
         params: { id: item.id },
       });
     },
