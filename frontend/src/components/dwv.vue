@@ -88,6 +88,8 @@
           vue: Vue.version
         },
         dwvApp: null,
+
+        //номенклатура инструментов https://github.com/ivmartel/dwv-jqui/blob/master/src/applauncher.js 
         tools: {
           Scroll: {},
           ZoomAndPan: {},

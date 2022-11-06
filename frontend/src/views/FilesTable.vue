@@ -13,7 +13,6 @@
       :sort-by.sync="order"
       :sort-desc.sync="desc"
       :custom-sort="(items) => items"
-      @click:row="viewAndLabeling"
     >
       <template v-slot:top>
         <v-toolbar flat>
@@ -35,15 +34,71 @@
       <template v-slot:item.preview="{ item }">
         <v-img contain :src="item.preview" height="128" v-if="item.preview" />
       </template>
-      <template v-slot:item.download="{ item }">
-        <v-btn
-          icon
-          :disabled="!item.is_marked_up"
-          @click="downloadMarkup(item)"
-          :loading="item.loading"
-        >
-          <v-icon class="mr-2"> mdi-download </v-icon>
-        </v-btn>
+      <template v-slot:item.actions="{ item }">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              :disabled="!item.is_marked_up"
+              @click="downloadMarkup(item)"
+              :loading="item.loading"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon> mdi-download </v-icon>
+            </v-btn>
+          </template>
+          <span>Скачать разметку</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon @click="viewAndLabeling(item)" v-bind="attrs" v-on="on">
+              <v-icon> mdi-eye </v-icon>
+            </v-btn>
+          </template>
+          <span>Просмотреть файл</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              @click="viewGenerate(item)"
+              v-bind="attrs"
+              v-on="on"
+              :disabled="
+                item.generation_status && item.generation_status != 'ready'
+              "
+            >
+              <v-icon> mdi-autorenew </v-icon>
+            </v-btn>
+          </template>
+          <span>Генерация</span>
+        </v-tooltip>
+        <v-dialog v-model="item.dialog" width="300">
+          <template v-slot:activator="{ on: dialog, attrs }">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-btn icon v-bind="attrs" v-on="{ ...tooltip, ...dialog }">
+                  <v-icon> mdi-delete </v-icon>
+                </v-btn>
+              </template>
+              <span>Удалить</span>
+            </v-tooltip>
+          </template>
+          <v-card>
+            <v-card-title> Внимание! </v-card-title>
+
+            <v-card-text> Вы уверены, что хотите удалить файл? </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red" text @click="deleteFile(item)"> Да </v-btn>
+              <v-btn color="green" text @click="item.dialog = false">
+                Нет
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </template>
       <template v-slot:item.is_marked_up="{ item }">
         <v-icon class="mr-2" :color="item.is_marked_up ? 'green' : 'red'">
@@ -74,7 +129,7 @@
   </div>
 </template>
 <script>
-import http from "@/http";
+import http from "../http";
 import Axios from "axios";
 export default {
   data() {
@@ -107,8 +162,8 @@ export default {
           sortable: false,
         },
         {
-          text: "Скачать JSON",
-          value: "download",
+          text: "Действия",
+          value: "actions",
           align: "center",
           sortable: false,
         },
@@ -160,10 +215,28 @@ export default {
       this.items = [];
     },
     viewAndLabeling(item) {
+      if (item.generation_status == "processing") {
+        this.$router.push({
+          name: "ViewGeneration",
+          params: { id: item.id },
+        });
+        return;
+      }
       this.$router.push({
         name: "ViewLabeling",
         params: { id: item.id },
       });
+    },
+    viewGenerate(item) {
+      this.$router.push({
+        name: "ViewGenerationSetup",
+        params: { id: item.id },
+      });
+    },
+    async deleteFile(item) {
+      await http.deleteItem("File", { id: item.id, showSnackbar: true });
+      item.dialog = false;
+      this.doSearch();
     },
   },
   computed: {

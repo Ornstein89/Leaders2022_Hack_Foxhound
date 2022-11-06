@@ -4,7 +4,7 @@
       ><router-link
         :to="{ name: 'FilesTable' }"
         class="text-decoration-none text-dark"
-        >FoxHound</router-link
+        >FoxMed</router-link
       ></v-app-bar-title
     >
 
@@ -17,4 +17,7 @@ export default {};
 </script>
 
 <style>
+.v-app-bar-title__content {
+  width: 200px !important;
+}
 </style>

@@ -24,13 +24,24 @@ class HorizontalLocation(str, Enum):
     bottom = "Нижняя"
 
 
+class GenerationStatus(str, Enum):
+    error = "error"
+    processing = "processing"
+    ready = "ready"
+
+
 class Location(BaseModel):
     vertical: VerticalLocation
     horizontal: HorizontalLocation
 
 
+class GeneratorType(str, Enum):
+    simple = "simple"
+    pix2pix = "pix2pix"
+
+
 class BaseFile(BaseModel):
-    path: str
+    paths: list[str]
     name: Indexed(str, pymongo.TEXT)
     dttm_created: datetime = Field(default_factory=datetime.utcnow)
     dttm_updated: datetime = Field(default_factory=datetime.utcnow)
@@ -39,9 +50,11 @@ class BaseFile(BaseModel):
     markup: Optional[dict]
     research_type: Optional[str]
     pathology: Optional[PathologyType]
-    generator_type: Optional[str]
+    generator_type: Optional[GeneratorType]
     size: Optional[int]
     location: Optional[Location]
+    generation_status: Optional[GenerationStatus]
+    generation_params: Optional[dict]
 
     class Settings:
         name = "file_collection"

@@ -1,0 +1,3 @@
+[submodule "frontend/src/components/dwv-jqui"]
+	path = frontend/src/components/dwv-jqui
+	url = https://github.com/ivmartel/dwv-jqui.git
