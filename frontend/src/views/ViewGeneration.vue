@@ -11,7 +11,7 @@
   <v-row style="height: 100%" no-gutters fill-height>
 
 
-    <v-col cols="12" sm="10">
+    <v-col cols="12" sm="9">
       <v-card class="fill-height d-flex flex-column ma-1">
         <!-- само поле просмотра -->
         <!-- <dwvVue /> -->
@@ -91,116 +91,147 @@
       </v-card>
     </v-col>
 
-    <v-col cols="12" sm="2">
+    <v-col cols="12" sm="3">
       <v-card class="fill-height d-flex flex-column ma-1">
-        <v-spacer vertical></v-spacer>
-
-        <v-btn-toggle
-          v-model="toggle_labeling"
-          style="flex-direction: column"
-          tile
+        <v-tabs
+          v-model="tab"
+          align-with-title
         >
-          <v-btn class="ma-1" :value="'Ruler'">
-            <v-icon>mdi-ruler</v-icon>
-          </v-btn>
+          <v-tabs-slider color="yellow"></v-tabs-slider>
 
-          <v-btn class="ma-1" :value="'Rectangle'">
-            <v-icon>mdi-vector-rectangle</v-icon>
-          </v-btn>
+          <v-tab
+            v-for="item in tab_items"
+            :key="item"
+          >
+            {{ item }}
+          </v-tab>
+        </v-tabs>
+  
+      <v-tabs-items v-model="tab">
 
-          <v-btn class="ma-1" :value="'Roi'">
-            <v-icon>mdi-vector-polygon</v-icon>
-          </v-btn>
+        <!-- панель первого генератора на контурах -->
+        <v-tab-item>
+          <v-card flat class="fill-height d-flex flex-column ma-1">
+            <v-card-text>
+              <p  class="font-weight-black">Генератор аугментаций №1</p>
+              <p class="font-weight-bold">Принцип работы:</p>
+              <p class="font-italic">
+                1) Генерация случайного гладкого контура неправильной формы;<br/>
+                2) Неравномерное сглаживание случайным Гауссовым полем;<br/>
+                3) Масштабирование яркости и размера;<br/>
+                4) Добавление к исходному изображению;
+              </p>
+              <p class="font-weight-bold">Особенности:</p>
+              <p class="font-italic">
+                1) В настоящий момент генерирует только опухоли (новообразования компактной формы);<br>
+                2) Работает в полуавтоматическом режиме (требует указания положения и размеров от пользователя);</p>
+            </v-card-text>
+            <v-spacer vertical></v-spacer>
+            <v-row class="ma-1" >
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="x_px"
+                  :label="'x, px'"
+                  hint="Целое число"
+                  persistent-hint
+                  prepend-icon="mdi-arrow-right-thin"
+                  outlined required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="y_px"
+                  :label="'y, px'"
+                  hint="Целое число"
+                  persistent-hint
+                  prepend-icon="mdi-arrow-down-thin"
+                  outlined required
+                ></v-text-field>
+              </v-col>
+            </v-row>
 
-          <v-btn class="ma-1" :value="'FreeHand'">
-            <v-icon>mdi-vector-radius</v-icon>
-          </v-btn>
+            <v-row class="ma-1" >
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="width_px"
+                  :label="'Ширина, px'"
+                  hint="Целое число"
+                  persistent-hint
+                  prepend-icon="mdi-arrow-left-right-bold"
+                  outlined required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="height_px"
+                  :label="'Высота, px'"
+                  hint="Целое число"
+                  persistent-hint
+                  prepend-icon="mdi-arrow-up-down-bold"
+                  outlined required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            
+            <!-- :rules="[rules.required, rules.date]"
+                :readonly="all_readonly" -->
 
-          <v-tooltip left>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ma-1" :value="'Livewire'"
-                v-bind="attrs" v-on="on"
-              >
-                <v-icon>mdi-draw</v-icon>
+            <v-row class="ma-1" >
+              <v-btn
+                class="ma-1"
+                color="primary"
+                :loading="loading"
+                @click="onGenerate">
+                Генерация
               </v-btn>
-            </template>
-            <span>Автоконтур</span>
-          </v-tooltip>
+              <v-btn class="ma-1" outlined @click="onSave">
+                <v-icon>mdi-content-save</v-icon>
+                Сохранить
+              </v-btn>
+              <v-btn class="ma-1" color="error" outlined @click="onCancel">
+                Выход
+              </v-btn>
+            </v-row>
+          </v-card>
+        </v-tab-item>
 
-        </v-btn-toggle>
-
-        <v-tooltip left>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ma-1" tile elevation="0"
-              @click="onContoursSave"
-              v-bind="attrs" v-on="on"
-            >
-              <v-icon>mdi-content-save</v-icon>
-            </v-btn>
-          </template>
-          <span>Сохранить разметку<br>на сервере</span>
-        </v-tooltip>
-
-        <v-checkbox :label="'Авто'" class="text-center"></v-checkbox>
-
-        <v-tooltip left>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ma-1" tile elevation="0"
-              @click="onDownloadJsonClicked"
-              v-bind="attrs" v-on="on"
-            >
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </template>
-          <span>Скачать файл разметки</span>
-        </v-tooltip>
-
-        <v-tooltip left>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ma-1" tile elevation="0"
-              :loading="isSelecting"
-              @click="handleFileImport"
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon>mdi-upload</v-icon>
-            </v-btn>
-          </template>
-          <span>Загрузить файл разметки</span>
-        </v-tooltip>
-
-        <!-- компонент для загрузки файла JSON с разметкой -->
-        <input 
-            ref="uploader" 
-            class="d-none" 
-            type="file" 
-            @change="onFileChanged"
-        >
-
-        <v-spacer vertical></v-spacer>
-
-        <v-tooltip left>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="ma-1"
-              tile
-              elevation="0"
-              v-bind="attrs"
-              v-on="on"
-              color="primary"
-              disabled
-            >
-              <!-- <v-avatar color="primary"> -->
-              <!-- <img src="https://github.com/opencv/cvat/blob/develop/site/content/en/images/logo2.png?raw=true"> -->
-              <img
-                width="50"
-                src="https://uploads-ssl.webflow.com/62bebfb83044de7f13ae257e/62bec02423796903b293473e_Logo.svg"
-              />
-              <!-- </v-avatar> -->
-            </v-btn>
-          </template>
-          <span>Экспериментальная интеграция CVAT</span>
-        </v-tooltip>
+        <!-- панель второго генератора на ML -->
+        <v-tab-item>
+          <v-card flat  class="fill-height d-flex flex-column ma-1">
+            <v-card-text>
+              <p  class="font-weight-black">Генератор аугментаций №1</p>
+              <p class="font-weight-bold">Принцип работы:</p>
+              <p class="font-italic">
+                1) ...;<br/>
+                2) ...;<br/>
+                3) ...;<br/>
+                4) .;
+              </p>
+              <p class="font-weight-bold">Особенности:</p>
+              <p class="font-italic">
+                1) ...;<br>
+                2) ...;</p>
+            </v-card-text>
+            <v-spacer vertical></v-spacer>
+            <v-row class="ma-1" >
+              <v-btn
+                class="ma-1"
+                color="primary"
+                :loading="loading"
+                @click="onGenerate2">
+                Генерация
+              </v-btn>
+              <v-btn class="ma-1" outlined @click="onSave2">
+                <v-icon>mdi-content-save</v-icon>
+                Сохранить
+              </v-btn>
+              <v-btn class="ma-1" color="error" outlined @click="onCancel2">
+                Выход
+              </v-btn>
+            </v-row>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
       </v-card>
     </v-col>
   </v-row>
@@ -294,7 +325,8 @@ export default {
         objects:[
           {x:1,y:2},
         ]}, // объекты разметки для перевода в JSON
-
+      tab : null,
+      tab_items: ["Генератор 1", "Генератор 2"],
       // номенклатура инструментов https://github.com/ivmartel/dwv-jqui/blob/master/src/applauncher.js
       tools: {
         Scroll: {},
@@ -317,9 +349,89 @@ export default {
       dropboxClassName: "dropBox",
       borderClassName: "dropBoxBorder",
       hoverClassName: "hover",
+
+      x_px : 150,
+      y_px : 250,
+      width_px : 30,
+      height_px : 30,
+
+      loading: true,
+
     };
   },
   methods: {
+    // Группа методов для первого алгоритма генерации (моего)
+
+    onGenerate(){
+      // TODO отправка запроса на генерацию с параметрами
+      //    this.x_px
+      //    this.y_px
+      //    this.width_px
+      //    this.height_px
+
+      // ожидание получения  результата
+      this.loading=true;
+
+      // TODO ожидание
+
+      // TODO в конце ожидания (может надо куда-то перенести)
+      // загрузка результата генерации из URL:
+      this.dwvApp.reset();
+      this.dwvApp.init({
+        dataViewConfigs: { "*": [{ divId: "layerGroup0" }] },
+        tools: this.tools,
+      });
+      this.dwvApp.loadURLs(["1-14.dcm", "1-15.dcm", "1-16.dcm"]);
+
+      // завершение индикатора ожидания
+      // в this.dwvApp.addEventListener("loadend"... ниже
+      // ... я уже прописал
+    },
+
+    onSave(){
+      //TODO выход с сохранением
+    },
+
+    onCancel(){
+      //TODO возврат без сохранения
+    },
+
+    // Группа методов для второго алгоритма
+
+    onGenerate2(){
+      // TODO отправка запроса на генерацию с параметрами
+      //    this.x_px
+      //    this.y_px
+      //    this.width_px
+      //    this.height_px
+
+      // ожидание получения  результата
+      this.loading=true;
+
+      // TODO ожидание
+
+      // TODO в конце ожидания (может надо куда-то перенести)
+      // загрузка результата генерации из URL:
+      this.dwvApp.reset();
+      this.dwvApp.init({
+        dataViewConfigs: { "*": [{ divId: "layerGroup0" }] },
+        tools: this.tools,
+      });
+      this.dwvApp.loadURLs(["1-14.dcm", "1-15.dcm", "1-16.dcm"]);
+
+      // завершение индикатора ожидания
+      // в this.dwvApp.addEventListener("loadend"... ниже
+      // ... я уже прописал
+    },
+
+    onSave2(){
+      //TODO выход с сохранением
+    },
+
+    onCancel2(){
+      //TODO возврат без сохранения
+    },
+
     onChangeTool: function (tool) { // при выборе инструмента разметки
       this.selectedTool = tool;
       this.dwvApp.setTool(tool);
@@ -583,6 +695,8 @@ export default {
         // this.showDropbox(true);
       }
 
+      this.loading=false;
+
       this.layergroup = 
           this.dwvApp.getActiveLayerGroup();
         this.viewController =
@@ -628,7 +742,7 @@ export default {
     console.log("dwv = ", dwv);
     console.log("dwvApp = ", this.dwvApp);
     // this.dwvApp.loadURLs([this.file.path]); //XXX для отладки загрузка из URL
-    this.dwvApp.loadURLs(["1-14.dcm", "1-15.dcm", "1-16.dcm"]);
+    this.dwvApp.loadURLs(["Malignant case (1).jpg"]);
 
   //TODO загрузка по this.$route.params.id
   },

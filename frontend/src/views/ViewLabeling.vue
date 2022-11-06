@@ -714,6 +714,7 @@ export default {
         this.loadProgress = 0;
         alert("Load was aborted.");
         // this.showDropbox(true);
+        // TODO здесь подгрузка JSON разметки из БД
       }
 
       this.layergroup = 
