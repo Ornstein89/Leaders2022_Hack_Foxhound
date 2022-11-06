@@ -49,7 +49,7 @@ class Pix2Pix:
         with TemporaryDirectory() as tmp_dir:
             path = os.path.join(tmp_dir, "file.dcm")
             shutil.copyfile(dicom_path, path)
-            image = load_dicom(path)
+            image = load_dicom(tmp_dir)
         lung = self.segmentation_lung(image)
 
         image = sitk.GetArrayFromImage(image)
