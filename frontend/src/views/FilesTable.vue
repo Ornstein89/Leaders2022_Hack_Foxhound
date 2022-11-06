@@ -74,6 +74,31 @@
           </template>
           <span>Генерация</span>
         </v-tooltip>
+        <v-dialog v-model="item.dialog" width="300">
+          <template v-slot:activator="{ on: dialog, attrs }">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on: tooltip }">
+                <v-btn icon v-bind="attrs" v-on="{ ...tooltip, ...dialog }">
+                  <v-icon> mdi-delete </v-icon>
+                </v-btn>
+              </template>
+              <span>Удалить</span>
+            </v-tooltip>
+          </template>
+          <v-card>
+            <v-card-title> Внимание! </v-card-title>
+
+            <v-card-text> Вы уверены, что хотите удалить файл? </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="red" text @click="deleteFile(item)"> Да </v-btn>
+              <v-btn color="green" text @click="item.dialog = false">
+                Нет
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </template>
       <template v-slot:item.is_marked_up="{ item }">
         <v-icon class="mr-2" :color="item.is_marked_up ? 'green' : 'red'">
@@ -104,7 +129,7 @@
   </div>
 </template>
 <script>
-import http from "@/http";
+import http from "../http";
 import Axios from "axios";
 export default {
   data() {
@@ -207,6 +232,11 @@ export default {
         name: "ViewGenerationSetup",
         params: { id: item.id },
       });
+    },
+    async deleteFile(item) {
+      await http.deleteItem("File", { id: item.id, showSnackbar: true });
+      item.dialog = false;
+      this.doSearch();
     },
   },
   computed: {
