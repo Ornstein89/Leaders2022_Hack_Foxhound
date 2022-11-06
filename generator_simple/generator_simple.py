@@ -198,45 +198,45 @@ def add_nodule(src, coord=(150, 250), size=(100,100)):
     random_contour_resized = np.array(0.9 * random_contour_resized, dtype = np.int16)
     # print("4 = ", random_contour_resized)
     # alpha_mask_resized = cv2.threshold(cv2.resize(alpha_mask, size, interpolation = cv2.INTER_AREA),1,255,cv2.THRESH_BINARY)
-    src = src + np.abs(image_shift)
-    roi = src[coord[1]:coord[1]+size[1], coord[0]:coord[0]+size[0]]
+    # result = src.copy() - image_shift
+    result = np.subtract(src.copy(), image_shift)
+    roi = result[coord[1]:coord[1]+size[1], coord[0]:coord[0]+size[0]]
     dst = cv2.add(roi,random_contour_resized)
-    src[coord[1]:coord[1]+size[1], coord[0]:coord[0]+size[0]] = dst
-    # cv.bitwise_and(src[],random_contour_resized,mask = alpha_mask_resized)
-    result = None
-    return src - np.abs(image_shift)
+    result[coord[1]:coord[1]+size[1], coord[0]:coord[0]+size[0]] = dst
+    result = np.add(result, image_shift)
+    return result
 
-def image_from_dicom(filename, wc = 0, ww = 1500, dtype=np.uint8):
-    dicom_file = dcmread(filename)
-    image_matrix = dicom_file.pixel_array
+# def image_from_dicom(filename, wc = 0, ww = 1500, dtype=np.uint8):
+#     dicom_file = dcmread(filename)
+#     image_matrix = dicom_file.pixel_array
 
-    orig_shape = image_matrix.shape
-    print("min = ", image_matrix.min())
-    print("max = ", image_matrix.max())
+#     orig_shape = image_matrix.shape
+#     print("min = ", image_matrix.min())
+#     print("max = ", image_matrix.max())
 
-    # выделение к окна wc/ww (засветка и затемнение прочих частей матрицы)
+#     # выделение к окна wc/ww (засветка и затемнение прочих частей матрицы)
 
-    lung_brightness_lower = wc - ww/2
-    lung_brightness_upper = wc + ww/2
+#     lung_brightness_lower = wc - ww/2
+#     lung_brightness_upper = wc + ww/2
 
-    image_matrix[image_matrix < lung_brightness_lower] = lung_brightness_lower
-    image_matrix[image_matrix > lung_brightness_upper] = lung_brightness_upper
+#     image_matrix[image_matrix < lung_brightness_lower] = lung_brightness_lower
+#     image_matrix[image_matrix > lung_brightness_upper] = lung_brightness_upper
 
-    # нормализация под диапазон обычного изображения (0,255)
-    # normalized_matrix = minmax_scale(image_matrix.flatten(), feature_range=(0,65535))
-    normalized_matrix = minmax_scale(image_matrix.flatten(), feature_range=(0,255))
-    displayed_matrix_8bit = normalized_matrix.reshape(orig_shape).astype(dtype=dtype)
-    # print("min = ", displayed_matrix_8bit.min())
-    # print("max = ", displayed_matrix_8bit.max())
-    return displayed_matrix_8bit
+#     # нормализация под диапазон обычного изображения (0,255)
+#     # normalized_matrix = minmax_scale(image_matrix.flatten(), feature_range=(0,65535))
+#     normalized_matrix = minmax_scale(image_matrix.flatten(), feature_range=(0,255))
+#     displayed_matrix_8bit = normalized_matrix.reshape(orig_shape).astype(dtype=dtype)
+#     # print("min = ", displayed_matrix_8bit.min())
+#     # print("max = ", displayed_matrix_8bit.max())
+#     return displayed_matrix_8bit
 
 if __name__=="__main__":
-    filename = "1-18.dcm"
+    filename = "C:/D/Apps/Hack/2022_1~1/Data/FINAL_~1/STUDIE~1/126435~1.000/126435~1.021/12B56F~1.DCM"
     dicom_file = dcmread(filename)
     
     # наложение новообразования
     # параметры coord=(150, 250), size=(100, 100) - из параметров API-запроса
-    result = add_nodule(dicom_file.pixel_array, coord=(150, 250), size=(100, 100))
+    result = add_nodule(dicom_file.pixel_array.copy().astype(np.int16), coord=(150, 250), size=(100, 100))
     print(result)
     # сохранение в new_file_name
     new_file_name = 'newimage.dcm'
@@ -253,11 +253,13 @@ if __name__=="__main__":
 
     newds.PixelSpacing = dicom_file.PixelSpacing # in mm
     newds.SliceThickness = dicom_file.SliceThickness # in mm
-
+    print("dicom_file.BitsAllocated= ", dicom_file.BitsAllocated)
     newds.BitsAllocated = dicom_file.BitsAllocated
+    print("dicom_file.PixelRepresentation= ", dicom_file.PixelRepresentation)
     newds.PixelRepresentation = dicom_file.PixelRepresentation
     newds.SamplesPerPixel = dicom_file.SamplesPerPixel
     newds.PhotometricInterpretation = dicom_file.PhotometricInterpretation
+    print("dicom_file.BitsStored= ", dicom_file.BitsStored)
     newds.BitsStored = dicom_file.BitsStored
     newds.PixelData = result.tobytes()
     newds.save_as(new_file_name, write_like_original=False)
