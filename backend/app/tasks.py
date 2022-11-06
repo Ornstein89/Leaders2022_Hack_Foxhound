@@ -30,6 +30,7 @@ def generate_file(_id: str):
             )
             result, _ = generator.inference(file.origin_path)
             result_path = file_service.save_file_sync(fromarray(result), ext=".png")
+            preview = result_path
         elif file.generator_type == GeneratorType.simple:
             from app.generator_simple import generate_simple_dcm_file
 
@@ -40,11 +41,12 @@ def generate_file(_id: str):
                 file.generation_params["width_px"],
                 file.generation_params["height_px"],
             )
-            file.preview = file_service.save_file_sync(
+            preview = file_service.save_file_sync(
                 make_dicom_thumbnail(result_path, (128, 128)), ext=".png"
             )
 
         file.paths = [result_path]
+        file.preview = preview
     except Exception:
         file.generation_status = GenerationStatus.error
         file.save()
