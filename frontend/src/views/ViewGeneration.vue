@@ -125,24 +125,26 @@
               <v-row class="ma-1">
                 <v-col cols="12" sm="6">
                   <v-text-field
-                    v-model="x_px"
+                    v-model.number="x_px"
                     :label="'x, px'"
                     hint="Целое число"
                     persistent-hint
                     prepend-icon="mdi-arrow-right-thin"
                     outlined
                     required
+                    type="number"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-text-field
-                    v-model="y_px"
+                    v-model.number="y_px"
                     :label="'y, px'"
                     hint="Целое число"
                     persistent-hint
                     prepend-icon="mdi-arrow-down-thin"
                     outlined
                     required
+                    type="number"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -150,24 +152,26 @@
               <v-row class="ma-1">
                 <v-col cols="12" sm="6">
                   <v-text-field
-                    v-model="width_px"
+                    v-model.number="width_px"
                     :label="'Ширина, px'"
                     hint="Целое число"
                     persistent-hint
                     prepend-icon="mdi-arrow-left-right-bold"
                     outlined
                     required
+                    type="number"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-text-field
-                    v-model="height_px"
+                    v-model.number="height_px"
                     :label="'Высота, px'"
                     hint="Целое число"
                     persistent-hint
                     prepend-icon="mdi-arrow-up-down-bold"
                     outlined
                     required
+                    type="number"
                   ></v-text-field>
                 </v-col>
               </v-row>

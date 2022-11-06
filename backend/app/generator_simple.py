@@ -252,7 +252,9 @@ def generate_simple_dcm_file(filename: str, x, y, width, height) -> str:
 
     # наложение новообразования
     result = add_nodule(
-        dicom_file.pixel_array.astype(np.int16), coord=(x, y), size=(width, height)
+        dicom_file.pixel_array.astype(np.int16),
+        coord=(int(x), int(y)),
+        size=(int(width), int(height)),
     )
     # сохранение в new_file_name
     new_file_name = FileService.generate_file_path()
