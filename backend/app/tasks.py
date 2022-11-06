@@ -32,7 +32,13 @@ def generate_file(_id: str):
         elif file.generator_type == GeneratorType.simple:
             from app.generator_simple import generate_simple_dcm_file
 
-            result_path = generate_simple_dcm_file(file.origin_path)
+            result_path = generate_simple_dcm_file(
+                file.origin_path,
+                file.generation_params["x_px"],
+                file.generation_params["y_px"],
+                file.generation_params["width_px"],
+                file.generation_params["height_px"],
+            )
 
         file.paths = [result_path]
     except Exception:

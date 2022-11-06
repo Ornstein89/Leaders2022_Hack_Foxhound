@@ -256,12 +256,11 @@ def image_from_dicom(filename, wc=0, ww=1500, dtype=np.uint8):
     return displayed_matrix_8bit
 
 
-def generate_simple_dcm_file(filename: str) -> str:
+def generate_simple_dcm_file(filename: str, x, y, width, height) -> str:
     dicom_file = dcmread(filename)
 
     # наложение новообразования
-    # параметры coord=(150, 250), size=(100, 100) - из параметров API-запроса
-    result = add_nodule(dicom_file.pixel_array, coord=(150, 250), size=(100, 100))
+    result = add_nodule(dicom_file.pixel_array, coord=(x, y), size=(width, height))
     # сохранение в new_file_name
     new_file_name = FileService.generate_file_path()
     newfileMeta = pydicom.Dataset()
