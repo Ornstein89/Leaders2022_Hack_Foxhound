@@ -222,18 +222,31 @@
           <v-tab-item>
             <v-card flat class="fill-height d-flex flex-column ma-1">
               <v-card-text>
-                <p class="font-weight-black">Генератор аугментаций №1</p>
+                <p class="font-weight-black">Генератор аугментаций №2</p>
                 <p class="font-weight-bold">Принцип работы:</p>
                 <p class="font-italic">
-                  1) ...;<br />
-                  2) ...;<br />
-                  3) ...;<br />
-                  4) .;
+                  1) Генерируется маска предварительного расположения матового
+                  стекла, основываясь на существующих очагах с добавлением
+                  искажения;<br />
+                  2) Входное изображение DICOM нормализуется и переводится в 3D
+                  куб данных для дальнейших этапов сегментации; <br />
+                  3) Производится сегментация области легких на каждом срезе
+                  исследования;<br />
+                  4) Производится наложение маски очага заболевания на срезы
+                  исследования;<br />
+                  5) Производится вырезание области легких из среза
+                  исследование;<br />
+                  6) Генерация очагов матового стекла с использованием cGAN на
+                  основе полученной сгенерированного изображения;<br />
+                  7) Сгенерированное изображение накладывается на срез КТ
+                  исследования.
                 </p>
                 <p class="font-weight-bold">Особенности:</p>
                 <p class="font-italic">
-                  1) ...;<br />
-                  2) ...;
+                  1) U-Net состоит из кодера (понижающего дискретизатора) и
+                  декодера (апсемплера);<br />
+                  2) Discriminator (Дискриминатор) представляет собой сверточный
+                  классификатор PatchGAN.
                 </p>
               </v-card-text>
               <v-spacer vertical></v-spacer>
@@ -426,7 +439,6 @@ export default {
           name: "ViewGeneration",
           params: { id: response.data.id },
         });
-        await this.reset();
       }
     },
 
@@ -457,7 +469,6 @@ export default {
           name: "ViewGeneration",
           params: { id: response.data.id },
         });
-        await this.reset();
       }
     },
 
@@ -488,21 +499,15 @@ export default {
       this.toggle_labeling = undefined;
       this.toggle_view = undefined;
     },
-    async reset() {
-      this.file = (
-        await http.getItem("File", {
-          id: this.$route.params.id,
-          showSnackbar: true,
-        })
-      ).data;
-      this.status = this.file.generation_status;
+    reset() {
       this.dwvApp.reset();
       this.dwvApp.init({
         dataViewConfigs: { "*": [{ divId: "layerGroup0" }] },
         tools: this.tools,
       });
       if (this.file.paths.length) this.dwvApp.loadURLs(this.file.paths);
-      else this.longPoolingInterval = setInterval(this.checkStatus, 2000);
+      else if (this.longPoolingInterval == null)
+        this.longPoolingInterval = setInterval(this.checkStatus, 2000);
     },
   },
 
@@ -624,6 +629,16 @@ export default {
     clearInterval(this.longPoolingInterval);
   },
   watch: {
+    async $route() {
+      this.file = (
+        await http.getItem("File", {
+          id: this.$route.params.id,
+          showSnackbar: true,
+        })
+      ).data;
+      this.status = this.file.generation_status;
+      this.reset();
+    },
     toggle_view: function (tool) {
       if (this.toggle_view_flag) {
         this.toggle_view_flag = false;

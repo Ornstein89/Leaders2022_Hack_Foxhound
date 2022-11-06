@@ -85,7 +85,7 @@ async def generate_file_route(params: GenerateFileParams):
         origin_path=params.origin_path,
         generation_status=GenerationStatus.processing,
         generator_type=params.generator_type,
-        params=params.params,
+        generation_params=params.params,
     ).save()
     generate_file.send(str(file.id))
     return file

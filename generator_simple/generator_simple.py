@@ -1,16 +1,12 @@
-from PIL import Image
 import numpy as np
 import cv2
 from sklearn.preprocessing import minmax_scale
 import pydicom
 from pydicom import dcmread
-from pydicom.data import get_testdata_files, get_testdata_file
 from scipy.special import binom
 
 from gstools import SRF, Gaussian
 import diplib as dip
-import matplotlib
-# matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 

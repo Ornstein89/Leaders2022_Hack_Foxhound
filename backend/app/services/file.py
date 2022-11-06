@@ -15,7 +15,8 @@ ORDER_FIELDS = {"dttm_updated", "dttm_created", "name"}
 
 
 class FileService:
-    def generate_file_path(self) -> str:
+    @staticmethod
+    def generate_file_path() -> str:
         return f"./media/files/{uuid4()}"
 
     def save_file_sync(self, file, ext="", path=None) -> str:

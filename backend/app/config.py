@@ -6,9 +6,9 @@ from pydantic import AmqpDsn, BaseSettings, MongoDsn, validator
 class Settings(BaseSettings):
     project_name: str = "Foxhound"
 
-    mongodb_server: str
+    mongodb_server: str = "db"
     mongodb_db: str = "db"
-    broker_server: str = "localhost"
+    broker_server: str = "broker"
     broker_port: str = "5672"
     broker_user: str = "guest"
     broker_pass: str = "guest"
