@@ -9,8 +9,6 @@
 
   <!-- панель управления обзором -->
   <v-row style="height: 100%" no-gutters fill-height>
-
-
     <v-col cols="12" sm="9">
       <v-card class="fill-height d-flex flex-column ma-1">
         <!-- само поле просмотра -->
@@ -93,165 +91,205 @@
 
     <v-col cols="12" sm="3">
       <v-card class="fill-height d-flex flex-column ma-1">
-        <v-tabs
-          v-model="tab"
-          align-with-title
-        >
+        <v-tabs v-model="tab" align-with-title>
           <v-tabs-slider color="yellow"></v-tabs-slider>
 
-          <v-tab
-            v-for="item in tab_items"
-            :key="item"
-          >
+          <v-tab v-for="item in tab_items" :key="item">
             {{ item }}
           </v-tab>
         </v-tabs>
-  
-      <v-tabs-items v-model="tab">
 
-        <!-- панель первого генератора на контурах -->
-        <v-tab-item>
-          <v-card flat class="fill-height d-flex flex-column ma-1">
-            <v-card-text>
-              <p  class="font-weight-black">Генератор аугментаций №1</p>
-              <p class="font-weight-bold">Принцип работы:</p>
-              <p class="font-italic">
-                1) Генерация случайного гладкого контура неправильной формы;<br/>
-                2) Неравномерное сглаживание случайным Гауссовым полем;<br/>
-                3) Масштабирование яркости и размера;<br/>
-                4) Добавление к исходному изображению;
-              </p>
-              <p class="font-weight-bold">Особенности:</p>
-              <p class="font-italic">
-                1) В настоящий момент генерирует только опухоли (новообразования компактной формы);<br>
-                2) Работает в полуавтоматическом режиме (требует указания положения и размеров от пользователя);</p>
-            </v-card-text>
-            <v-spacer vertical></v-spacer>
-            <v-row class="ma-1" >
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="x_px"
-                  :label="'x, px'"
-                  hint="Целое число"
-                  persistent-hint
-                  prepend-icon="mdi-arrow-right-thin"
-                  outlined required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="y_px"
-                  :label="'y, px'"
-                  hint="Целое число"
-                  persistent-hint
-                  prepend-icon="mdi-arrow-down-thin"
-                  outlined required
-                ></v-text-field>
-              </v-col>
-            </v-row>
+        <v-tabs-items v-model="tab">
+          <!-- панель первого генератора на контурах -->
+          <v-tab-item>
+            <v-card flat class="fill-height d-flex flex-column ma-1">
+              <v-card-text>
+                <p class="font-weight-black">Генератор аугментаций №1</p>
+                <p class="font-weight-bold">Принцип работы:</p>
+                <p class="font-italic">
+                  1) Генерация случайного гладкого контура неправильной
+                  формы;<br />
+                  2) Неравномерное сглаживание случайным Гауссовым полем;<br />
+                  3) Масштабирование яркости и размера;<br />
+                  4) Добавление к исходному изображению;
+                </p>
+                <p class="font-weight-bold">Особенности:</p>
+                <p class="font-italic">
+                  1) В настоящий момент генерирует только опухоли
+                  (новообразования компактной формы);<br />
+                  2) Работает в полуавтоматическом режиме (требует указания
+                  положения и размеров от пользователя);
+                </p>
+              </v-card-text>
+              <v-spacer vertical></v-spacer>
+              <v-row class="ma-1">
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="x_px"
+                    :label="'x, px'"
+                    hint="Целое число"
+                    persistent-hint
+                    prepend-icon="mdi-arrow-right-thin"
+                    outlined
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="y_px"
+                    :label="'y, px'"
+                    hint="Целое число"
+                    persistent-hint
+                    prepend-icon="mdi-arrow-down-thin"
+                    outlined
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
 
-            <v-row class="ma-1" >
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="width_px"
-                  :label="'Ширина, px'"
-                  hint="Целое число"
-                  persistent-hint
-                  prepend-icon="mdi-arrow-left-right-bold"
-                  outlined required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="height_px"
-                  :label="'Высота, px'"
-                  hint="Целое число"
-                  persistent-hint
-                  prepend-icon="mdi-arrow-up-down-bold"
-                  outlined required
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            
-            <!-- :rules="[rules.required, rules.date]"
+              <v-row class="ma-1">
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="width_px"
+                    :label="'Ширина, px'"
+                    hint="Целое число"
+                    persistent-hint
+                    prepend-icon="mdi-arrow-left-right-bold"
+                    outlined
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="height_px"
+                    :label="'Высота, px'"
+                    hint="Целое число"
+                    persistent-hint
+                    prepend-icon="mdi-arrow-up-down-bold"
+                    outlined
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+
+              <!-- :rules="[rules.required, rules.date]"
                 :readonly="all_readonly" -->
 
-            <v-row class="ma-1" >
-              <v-btn
-                class="ma-1"
-                color="primary"
-                :loading="loading"
-                @click="onGenerate">
-                Генерация
-              </v-btn>
-              <v-btn class="ma-1" outlined @click="onSave">
-                <v-icon>mdi-content-save</v-icon>
-                Сохранить
-              </v-btn>
-              <v-btn class="ma-1" color="error" outlined @click="onCancel">
-                Выход
-              </v-btn>
-            </v-row>
-          </v-card>
-        </v-tab-item>
+              <v-row class="ma-1">
+                <v-btn
+                  class="ma-1"
+                  color="primary"
+                  :loading="loading"
+                  @click="onGenerate('simple')"
+                  v-if="settingUp"
+                >
+                  Генерация
+                </v-btn>
+                <v-btn
+                  class="ma-1"
+                  color="primary"
+                  :loading="loading"
+                  @click="onReGenerate('simple')"
+                  v-if="!settingUp"
+                >
+                  Повторная генерация
+                </v-btn>
+                <v-btn
+                  class="ma-1"
+                  outlined
+                  @click="onSave"
+                  :disabled="loading"
+                  v-if="!settingUp"
+                >
+                  <v-icon>mdi-content-save</v-icon>
+                  Сохранить
+                </v-btn>
+                <v-btn
+                  class="ma-1"
+                  color="error"
+                  outlined
+                  @click="onCancel"
+                  v-if="!settingUp"
+                  :disabled="loading"
+                >
+                  Выход
+                </v-btn>
+              </v-row>
+            </v-card>
+          </v-tab-item>
 
-        <!-- панель второго генератора на ML -->
-        <v-tab-item>
-          <v-card flat  class="fill-height d-flex flex-column ma-1">
-            <v-card-text>
-              <p  class="font-weight-black">Генератор аугментаций №1</p>
-              <p class="font-weight-bold">Принцип работы:</p>
-              <p class="font-italic">
-                1) ...;<br/>
-                2) ...;<br/>
-                3) ...;<br/>
-                4) .;
-              </p>
-              <p class="font-weight-bold">Особенности:</p>
-              <p class="font-italic">
-                1) ...;<br>
-                2) ...;</p>
-            </v-card-text>
-            <v-spacer vertical></v-spacer>
-            <v-row class="ma-1" >
-              <v-btn
-                class="ma-1"
-                color="primary"
-                :loading="loading"
-                @click="onGenerate2">
-                Генерация
-              </v-btn>
-              <v-btn class="ma-1" outlined @click="onSave2">
-                <v-icon>mdi-content-save</v-icon>
-                Сохранить
-              </v-btn>
-              <v-btn class="ma-1" color="error" outlined @click="onCancel2">
-                Выход
-              </v-btn>
-            </v-row>
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
+          <!-- панель второго генератора на ML -->
+          <v-tab-item>
+            <v-card flat class="fill-height d-flex flex-column ma-1">
+              <v-card-text>
+                <p class="font-weight-black">Генератор аугментаций №1</p>
+                <p class="font-weight-bold">Принцип работы:</p>
+                <p class="font-italic">
+                  1) ...;<br />
+                  2) ...;<br />
+                  3) ...;<br />
+                  4) .;
+                </p>
+                <p class="font-weight-bold">Особенности:</p>
+                <p class="font-italic">
+                  1) ...;<br />
+                  2) ...;
+                </p>
+              </v-card-text>
+              <v-spacer vertical></v-spacer>
+              <v-row class="ma-1">
+                <v-btn
+                  class="ma-1"
+                  color="primary"
+                  :loading="loading"
+                  @click="onGenerate('pix2pix')"
+                  v-if="settingUp"
+                >
+                  Генерация
+                </v-btn>
+                <v-btn
+                  class="ma-1"
+                  color="primary"
+                  :loading="loading"
+                  @click="onReGenerate('pix2pix')"
+                  v-if="!settingUp"
+                >
+                  Повторная генерация
+                </v-btn>
+                <v-btn
+                  class="ma-1"
+                  outlined
+                  @click="onSave"
+                  :disabled="loading"
+                  v-if="!settingUp"
+                >
+                  <v-icon>mdi-content-save</v-icon>
+                  Сохранить
+                </v-btn>
+                <v-btn
+                  class="ma-1"
+                  color="error"
+                  outlined
+                  :disabled="loading"
+                  @click="onCancel"
+                  v-if="!settingUp"
+                >
+                  Выход
+                </v-btn>
+              </v-row>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
       </v-card>
     </v-col>
   </v-row>
   <!-- диалог генерации -->
 </template>
-
-<!-- <script type="text/javascript" src="../components/dwv-jqui/src/gui/infoController.js"></script>
-<script type="text/javascript" src="../components/dwv-jqui/src/gui/infoOverlay.js"></script> -->
 <script>
-// import http from "@/http"; //XXX  раскомментировать для перекладки страницы с тестовых данных на работу с сервом
-// import dwvVue from 'dwv';
-// import dwvVue from '../components/dwv';
+import http from "../http";
 
 import Vue from "vue";
-// import MdButton from "vue-material";
 import dwv from "dwv";
-// import dwvjq.gui.info.Controller from '../components/dwv-jqui/src/gui/infoController.js'
-// import {InfoController} from '../components/dwv-jqui/src/gui/infoController_copy.js'
-// import {dwvjq} from '../components/dwv-jqui/src/gui/infoOverlay.js'
-// import {dwvjq, startDwvjq} from '../components/dwv-jqui/src/dwv_jquiexport.js'
 
 // Vue.use(MdButton);
 
@@ -265,36 +303,18 @@ dwv.image.decoderScripts = {
   rle: "assets/dwv/decoders/dwv/decode-rle.js",
 };
 
-// dwv.tool = {};
-
-// dwv.tool.colourMaps = {
-//     plain: dwv.image.lut.plain,
-//     invplain: dwv.image.lut.invPlain,
-//     rainbow: dwv.image.lut.rainbow,
-//     hot: dwv.image.lut.hot,
-//     hotiron: dwv.image.lut.hot_iron,
-//     pet: dwv.image.lut.pet,
-//     hotmetalblue: dwv.image.lut.hot_metal_blue,
-//     pet20step: dwv.image.lut.pet_20step
-//   };
-
 dwv.tool.defaultpresets = {};
 
 dwv.tool.defaultpresets.CT = {
-    mediastinum: {center: 40, width: 400},
-    lung: {center: -500, width: 1500},
-    bone: {center: 500, width: 2000},
-    brain: {center: 40, width: 80},
-    head: {center: 90, width: 350}
-  };
+  mediastinum: { center: 40, width: 400 },
+  lung: { center: -500, width: 1500 },
+  bone: { center: 500, width: 2000 },
+  brain: { center: 40, width: 80 },
+  head: { center: 90, width: 350 },
+};
 
 export default {
   name: "ViewGeneration",
-  components: {
-    // dwvVue,
-    // tagsTable,
-    // Controller,
-  },
   data() {
     return {
       //https://ivmartel.github.io/dwv/doc/stable/dwv.tool.html
@@ -310,22 +330,21 @@ export default {
 
       dwvApp: null, // библиотека DWV
       infoController: null, // оверлей с информацией о снимке
-      infoControllerVisible : false, // состояние оверлея с информацией
+      infoControllerVisible: false, // состояние оверлея с информацией
       // standardWindows : ["Window1", "Window2", "Lung"],
-      selectedStndardWindow : null,
-      layergroup : null,
-      viewController : null,
-      presetNames : null, // пресеты по уровням яркости
-      drawColor : '#FF0000',
+      selectedStndardWindow: null,
+      layergroup: null,
+      viewController: null,
+      presetNames: null, // пресеты по уровням яркости
+      drawColor: "#FF0000",
 
       isSelecting: false, // для загрузки разметки в json
       selectedFile: null, // файл для загрузки разметки в json
-      
-      annotations:{
-        objects:[
-          {x:1,y:2},
-        ]}, // объекты разметки для перевода в JSON
-      tab : null,
+
+      annotations: {
+        objects: [{ x: 1, y: 2 }],
+      }, // объекты разметки для перевода в JSON
+      tab: null,
       tab_items: ["Генератор 1", "Генератор 2"],
       // номенклатура инструментов https://github.com/ivmartel/dwv-jqui/blob/master/src/applauncher.js
       tools: {
@@ -350,105 +369,117 @@ export default {
       borderClassName: "dropBoxBorder",
       hoverClassName: "hover",
 
-      x_px : 150,
-      y_px : 250,
-      width_px : 30,
-      height_px : 30,
+      x_px: 150,
+      y_px: 250,
+      width_px: 30,
+      height_px: 30,
 
-      loading: true,
-
+      file: null,
+      longPoolingInterval: null,
+      status: null,
     };
   },
   methods: {
-    // Группа методов для первого алгоритма генерации (моего)
-
-    onGenerate(){
-      // TODO отправка запроса на генерацию с параметрами
-      //    this.x_px
-      //    this.y_px
-      //    this.width_px
-      //    this.height_px
-
-      // ожидание получения  результата
-      this.loading=true;
-
-      // TODO ожидание
-
-      // TODO в конце ожидания (может надо куда-то перенести)
-      // загрузка результата генерации из URL:
+    async checkStatus() {
+      this.status = (
+        await http.getItem(`/api/files/${this.file.id}/status/`, {
+          showSnackbar: true,
+        })
+      ).data.status;
+      if (this.loading) return;
+      clearInterval(this.longPoolingInterval);
+      this.file = (
+        await http.getItem("File", {
+          id: this.file.id,
+          showSnackbar: true,
+        })
+      ).data;
       this.dwvApp.reset();
       this.dwvApp.init({
         dataViewConfigs: { "*": [{ divId: "layerGroup0" }] },
         tools: this.tools,
       });
-      this.dwvApp.loadURLs(["1-14.dcm", "1-15.dcm", "1-16.dcm"]);
-
-      // завершение индикатора ожидания
-      // в this.dwvApp.addEventListener("loadend"... ниже
-      // ... я уже прописал
+      this.dwvApp.loadURLs(this.file.paths);
     },
 
-    onSave(){
-      //TODO выход с сохранением
-    },
-
-    onCancel(){
-      //TODO возврат без сохранения
-    },
-
-    // Группа методов для второго алгоритма
-
-    onGenerate2(){
-      // TODO отправка запроса на генерацию с параметрами
-      //    this.x_px
-      //    this.y_px
-      //    this.width_px
-      //    this.height_px
-
-      // ожидание получения  результата
-      this.loading=true;
-
-      // TODO ожидание
-
-      // TODO в конце ожидания (может надо куда-то перенести)
-      // загрузка результата генерации из URL:
-      this.dwvApp.reset();
-      this.dwvApp.init({
-        dataViewConfigs: { "*": [{ divId: "layerGroup0" }] },
-        tools: this.tools,
+    async onReGenerate(generator_type) {
+      await http.deleteItem("File", { id: this.$route.params.id });
+      let params = {};
+      if (generator_type == "simple") {
+        params = {
+          x_px: this.x_px,
+          y_px: this.y_px,
+          width_px: this.width_px,
+          height_px: this.height_px,
+        };
+      }
+      const response = await http.createItem("/api/files/generate/", {
+        showSnackbar: true,
+        data: {
+          origin_path: this.file.origin_path,
+          params,
+          generator_type,
+        },
       });
-      this.dwvApp.loadURLs(["1-14.dcm", "1-15.dcm", "1-16.dcm"]);
-
-      // завершение индикатора ожидания
-      // в this.dwvApp.addEventListener("loadend"... ниже
-      // ... я уже прописал
+      if (response.status == 200) {
+        this.$router.replace({
+          name: "ViewGeneration",
+          params: { id: response.data.id },
+        });
+        await this.reset();
+      }
     },
 
-    onSave2(){
-      //TODO выход с сохранением
+    async onGenerate(generator_type) {
+      let params = {};
+      const originFileIndex =
+        this.viewController.getCurrentIndex().getValues()[2] == -1
+          ? 0
+          : this.viewController.getCurrentIndex().getValues()[2];
+      if (generator_type == "simple") {
+        params = {
+          x_px: this.x_px,
+          y_px: this.y_px,
+          width_px: this.width_px,
+          height_px: this.height_px,
+        };
+      }
+      const response = await http.createItem("/api/files/generate/", {
+        showSnackbar: true,
+        data: {
+          origin_path: this.file.paths[originFileIndex],
+          params,
+          generator_type,
+        },
+      });
+      if (response.status == 200) {
+        this.$router.replace({
+          name: "ViewGeneration",
+          params: { id: response.data.id },
+        });
+        await this.reset();
+      }
     },
 
-    onCancel2(){
-      //TODO возврат без сохранения
+    onSave() {
+      this.$router.replace({
+        name: "ViewLabeling",
+        params: { id: this.file.id },
+      });
     },
 
-    onChangeTool: function (tool) { // при выборе инструмента разметки
+    async onCancel() {
+      await http.deleteItem("File", { id: this.$route.params.id });
+      this.$router.replace({ name: "FilesTable" });
+    },
+
+    onChangeTool: function (tool) {
+      // при выборе инструмента разметки
       this.selectedTool = tool;
       this.dwvApp.setTool(tool);
       this.dwvApp.setDrawLineColour(this.drawColor);
-      if (tool === "Draw") {
-        this.onChangeShape(this.tools.Draw.options[0]);
-        this.dwvApp.setDrawLineColour(this.drawColor); // работает на выбранном инструменте
-      }
     },
 
-    // рисование
-    onChangeShape: function (shape) { 
-      if (this.dwvApp && this.selectedTool === "Draw") {
-        this.dwvApp.setDrawShape(shape);
-        this.dwvApp.setDrawLineColour(this.drawColor);
-      }
-    },
     onReset: function () {
       this.dwvApp.resetDisplay();
       this.dwvApp.setTool("Scroll");
@@ -457,174 +488,32 @@ export default {
       this.toggle_labeling = undefined;
       this.toggle_view = undefined;
     },
-    setupDropbox() {
-      this.showDropbox(true);
-    },
-    defaultHandleDragEvent: function (event) {
-      // prevent default handling
-      event.stopPropagation();
-      event.preventDefault();
-    },
-    onBoxDragOver: function (event) {
-      this.defaultHandleDragEvent(event);
-      // update box border
-      const box = document.getElementById(this.dropboxDivId);
-      if (box && box.className.indexOf(this.hoverClassName) === -1) {
-        box.className += " " + this.hoverClassName;
-      }
-    },
-    onBoxDragLeave: function (event) {
-      this.defaultHandleDragEvent(event);
-      // update box class
-      const box = document.getElementById(this.dropboxDivId);
-      if (box && box.className.indexOf(this.hoverClassName) !== -1) {
-        box.className = box.className.replace(" " + this.hoverClassName, "");
-      }
-    },
-    onDrop: function (event) {
-      this.defaultHandleDragEvent(event);
-      // load files
-      this.dwvApp.loadFiles(event.dataTransfer.files);
-    },
-    showDropbox: function (show) {
-      const box = document.getElementById(this.dropboxDivId);
-      if (!box) {
-        return;
-      }
-      const layerDiv = document.getElementById("layerGroup0");
-
-      if (show) {
-        // reset css class
-        box.className = this.dropboxClassName + " " + this.borderClassName;
-        // check content
-        if (box.innerHTML === "") {
-          const p = document.createElement("p");
-          p.appendChild(document.createTextNode("Drag and drop data here"));
-          box.appendChild(p);
-        }
-        // show box
-        box.setAttribute("style", "display:initial");
-        // stop layer listening
-        if (layerDiv) {
-          layerDiv.removeEventListener("dragover", this.defaultHandleDragEvent);
-          layerDiv.removeEventListener(
-            "dragleave",
-            this.defaultHandleDragEvent
-          );
-          layerDiv.removeEventListener("drop", this.onDrop);
-        }
-        // listen to box events
-        box.addEventListener("dragover", this.onBoxDragOver);
-        box.addEventListener("dragleave", this.onBoxDragLeave);
-        box.addEventListener("drop", this.onDrop);
-      } else {
-        // remove border css class
-        box.className = this.dropboxClassName;
-        // remove content
-        box.innerHTML = "";
-        // hide box
-        box.setAttribute("style", "display:none");
-        // stop box listening
-        box.removeEventListener("dragover", this.onBoxDragOver);
-        box.removeEventListener("dragleave", this.onBoxDragLeave);
-        box.removeEventListener("drop", this.onDrop);
-        // listen to layer events
-        if (layerDiv) {
-          layerDiv.addEventListener("dragover", this.defaultHandleDragEvent);
-          layerDiv.addEventListener("dragleave", this.defaultHandleDragEvent);
-          layerDiv.addEventListener("drop", this.onDrop);
-        }
-      }
-    },
-
-    onContoursSave(){
-      this.annotations = this.dwvApp.getState();
-      console.log("onContoursSave(): getState = ", this.annotations);
-      
-      // this.annotations = this.dwvApp.getDrawDisplayDetails();
-      // console.log("onContoursSave(): getDrawDisplayDetails = ", this.annotations);
-      
-      // var y = this.dwvApp.getDrawStoreDetails();
-      // console.log("onContoursSave(): getDrawStoreDetails = ", y);
-      // var json = state.toJSON(app);
-
-      // XXX TODO сохранение JSON-разметки this.annotations в БД
-    },
-
-    onSetPreset(presetname){
-      this.dwvApp.setWindowLevelPreset(presetname);
-    },
-
-    onDownloadJsonClicked(){ // закачка файла с разметкой
-      this.saveTemplateAsFile("annotations.json", this.annotations);
-    },
-
-    saveTemplateAsFile(filename, dataObjToWrite) {
-      // const blob = new Blob([JSON.stringify(dataObjToWrite)], {
-      const blob = new Blob([dataObjToWrite], {
-        type: "text/json",
+    async reset() {
+      this.file = (
+        await http.getItem("File", {
+          id: this.$route.params.id,
+          showSnackbar: true,
+        })
+      ).data;
+      this.status = this.file.generation_status;
+      this.dwvApp.reset();
+      this.dwvApp.init({
+        dataViewConfigs: { "*": [{ divId: "layerGroup0" }] },
+        tools: this.tools,
       });
-      const link = document.createElement("a");
-
-      link.download = filename;
-      link.href = window.URL.createObjectURL(blob);
-      link.dataset.downloadurl = ["text/json", link.download, link.href].join(
-        ":"
-      );
-
-      const evt = new MouseEvent("click", {
-        view: window,
-        bubbles: true,
-        cancelable: true,
-      });
-
-      link.dispatchEvent(evt);
-      link.remove();
-    },
-
-    handleFileImport() {
-      this.isSelecting = true;
-
-      // After obtaining the focus when closing the FilePicker, return the button state to normal
-      window.addEventListener('focus', () => {
-          this.isSelecting = false
-      }, { once: true });
-      
-      // Trigger click on the FileInput
-      this.$refs.uploader.click();
-    },
-
-    onFileChanged(e) {
-      // функция вызывается, когда файл JSON загружается на страницу
-      // для восстановления разметки
-
-      this.selectedFile = e.target.files[0];
-      
-      // Do whatever you need with the file, liek reading it with FileReader
-      const file= e.target.files[0];
-      console.log("selectedFile = ", file);
-
-      let reader = new FileReader();
-      reader.onload = (e) => {
-          this.selectedFile = e.target.result;
-          // This is a regular expression to identify carriage
-          // Returns and line breaks
-          // this.selectedFile = file_contents.split(/\r\n|\n/);
-          console.log("split = ", this.selectedFile);
-          console.log("typeof split = ", typeof(this.selectedFile));
-          var state = new dwv.io.State();
-          console.log("state = ", state);
-          // https://github.com/ivmartel/dwv/blob/develop/tests/state/state.test.js
-          var jsonData = state.fromJSON(e.target.result);
-          console.log("fromJSON = ", jsonData);
-          state.apply(this.dwvApp, jsonData);
-      };
-      reader.onerror = (e) => alert(e.target.error.name);
-      reader.readAsText(file);
+      if (this.file.paths.length) this.dwvApp.loadURLs(this.file.paths);
+      else this.longPoolingInterval = setInterval(this.checkStatus, 2000);
     },
   },
 
-  mounted() {
+  async mounted() {
+    this.file = (
+      await http.getItem("File", {
+        id: this.$route.params.id,
+        showSnackbar: true,
+      })
+    ).data;
+    this.status = this.file.generation_status;
     // create app
     this.dwvApp = new dwv.App();
     console.log("mounted(): this.dwvApp = ", this.dwvApp);
@@ -636,22 +525,15 @@ export default {
     });
 
     // handle load events
-    let nLoadItem = null;
     let nReceivedError = null;
     let nReceivedAbort = null;
     let isFirstRender = null;
-    this.dwvApp.addEventListener("loadstart", (event) => {
+    this.dwvApp.addEventListener("loadstart", () => {
       // reset flags
       this.dataLoaded = false;
-      nLoadItem = 0;
       nReceivedError = 0;
       nReceivedAbort = 0;
       isFirstRender = true;
-      // hide drop box
-      this.showDropbox(false);
-      if (event.loadtype === "image") {
-        // this.infoController.onLoadStart();
-      }
     });
     this.dwvApp.addEventListener("loadprogress", (event) => {
       this.loadProgress = event.loaded;
@@ -683,38 +565,27 @@ export default {
     this.dwvApp.addEventListener("loadend", (/*event*/) => {
       if (nReceivedError) {
         this.loadProgress = 0;
-        alert("Received errors during load. Check log for details.");
+        // alert("Received errors during load. Check log for details.");
         // show drop box if nothing has been loaded
-        if (!nLoadItem) {
-          // this.showDropbox(true);
-        }
       }
       if (nReceivedAbort) {
         this.loadProgress = 0;
         alert("Load was aborted.");
-        // this.showDropbox(true);
       }
 
-      this.loading=false;
+      this.layergroup = this.dwvApp.getActiveLayerGroup();
+      this.viewController = this.layergroup
+        .getActiveViewLayer()
+        .getViewController();
 
-      this.layergroup = 
-          this.dwvApp.getActiveLayerGroup();
-        this.viewController =
-          this.layergroup.getActiveViewLayer().getViewController();
-        this.presetNames =
-          this.viewController.getWindowLevelPresetsNames()
+      console.log("layer group = ", this.layergroup);
+      console.log("viewController = ", this.viewController);
+      console.log("presetNames = ", this.presetNames);
 
-
-        console.log("layer group = ", this.layergroup);
-        console.log("viewController = ", this.viewController);
-        console.log("presetNames = ", this.presetNames);
-        
-        // dwv.setDrawLineColour('Red');
-        // console.log("layer group = ", this.dwvApp.getActiveLayerGroup());
-
+      // dwv.setDrawLineColour('Red');
+      // console.log("layer group = ", this.dwvApp.getActiveLayerGroup());
     });
     this.dwvApp.addEventListener("loaditem", (event) => {
-      ++nLoadItem;
       if (event.loadtype === "image") {
         //
       }
@@ -734,19 +605,24 @@ export default {
     // handle window resize
     window.addEventListener("resize", this.dwvApp.onResize);
 
-    // setup drop box
-    // this.setupDropbox() // ИЗМЕНЕНО - отключил ручное перетаскивание
-
     // possible load from location
     dwv.utils.loadFromUri(window.location.href, this.dwvApp);
     console.log("dwv = ", dwv);
     console.log("dwvApp = ", this.dwvApp);
-    // this.dwvApp.loadURLs([this.file.path]); //XXX для отладки загрузка из URL
-    this.dwvApp.loadURLs(["Malignant case (1).jpg"]);
-
-  //TODO загрузка по this.$route.params.id
+    if (this.file.paths.length) this.dwvApp.loadURLs(this.file.paths);
+    else this.longPoolingInterval = setInterval(this.checkStatus, 2000);
   },
-  computed: {},
+  computed: {
+    settingUp() {
+      return this.$route.name == "ViewGenerationSetup";
+    },
+    loading() {
+      return this.status == "processing";
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.longPoolingInterval);
+  },
   watch: {
     toggle_view: function (tool) {
       if (this.toggle_view_flag) {
@@ -765,7 +641,8 @@ export default {
       this.toggle_labeling_flag = true;
     },
 
-    toggle_labeling: function (shape) { // при выборе инструмента разметки
+    toggle_labeling: function (shape) {
+      // при выборе инструмента разметки
 
       if (this.toggle_labeling_flag) {
         this.toggle_labeling_flag = false;
@@ -775,12 +652,9 @@ export default {
 
       // нажата кнопка сброса
       if (shape == undefined) {
-        // this.dwvApp.setTool('Scroll');
         this.selectedTool = "Scroll";
         return;
       }
-      // this.dwvApp.setTool('Draw');
-      // this.dwvApp.setDrawShape(shape)
 
       //деактивация противоположной панели
       this.toggle_view = undefined; //TODO
@@ -798,17 +672,7 @@ export default {
       this.selectedTool = "Draw";
       this.dwvApp.setTool("Draw");
       console.log("toggle_labeling(), shape = ", shape);
-      console.log("3. onChangeShape");
-      this.onChangeShape(shape);
     },
-
-    // selectedTool:{
-    //   handler(newTool){
-    //     this.dwvApp.setTool(newTool);
-    //     console.log("2. setTool")
-    //   },
-    //   immediate: true,
-    // },
   },
 };
 </script>

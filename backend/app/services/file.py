@@ -15,16 +15,25 @@ ORDER_FIELDS = {"dttm_updated", "dttm_created", "name"}
 
 
 class FileService:
-    async def save_file(self, file: Union[UploadFile, Image], ext="") -> str:
-        path = f"./media/files/{uuid4()}" + ext
+    def generate_file_path(self) -> str:
+        return f"./media/files/{uuid4()}"
+
+    def save_file_sync(self, file, ext="", path=None) -> str:
+        path = (path or self.generate_file_path()) + ext
         if isinstance(file, Image):
             file.save(path)
-        elif inspect.iscoroutinefunction(file.read):
-            async with aiofiles.open(path, "wb") as f:
-                await f.write(await file.read())
         else:
             with open(path, "wb") as f:
                 f.write(file.read())
+        return path
+
+    async def save_file(self, file: Union[UploadFile, Image], ext="") -> str:
+        path = self.generate_file_path() + ext
+        if inspect.iscoroutinefunction(file.read):
+            async with aiofiles.open(path, "wb") as f:
+                await f.write(await file.read())
+        else:
+            self.save_file_sync(file, ext, path)
         return path
 
     async def create(self, files: list[UploadFile], name: str) -> database.File:
@@ -32,7 +41,7 @@ class FileService:
         preview_path = None
         preview = make_dicom_thumbnail(paths[0], (128, 128))
         if preview is not None:
-            preview_path = await self.save_file(preview, ".png")
+            preview_path = self.save_file_sync(preview, ".png")
         return await database.File(paths=paths, name=name, preview=preview_path).save()
 
     def get_sort(self, field: str) -> dict[str, int]:

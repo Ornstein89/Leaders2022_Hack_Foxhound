@@ -12,5 +12,6 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
 COPY ./backend/pyproject.toml ./backend/poetry.lock* /app/
 
 RUN poetry install --no-root --no-dev
+RUN python3 -m pip install tensorflow lungmask
 
 COPY ./backend /app

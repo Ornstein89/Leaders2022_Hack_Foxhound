@@ -36,6 +36,12 @@ async def get_file(id: PydanticObjectId):
     return await get_or_404(database.File, id, "Файл не найден")
 
 
+@router.delete("/{id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_file(id: PydanticObjectId):
+    file = await get_or_404(database.File, id, "Файл не найден")
+    await file.delete()
+
+
 @router.get("/{id}/markup/")
 async def get_file_markup(id: PydanticObjectId):
     file = await get_or_404(database.File, id, "Файл не найден")
@@ -71,19 +77,17 @@ async def save_markup(id: PydanticObjectId, schema: dict):
     return file
 
 
-@router.post(
-    "/{id}/generate/", response_model=database.File, response_model_by_alias=False
-)
-async def generate_file_route(id: PydanticObjectId, params: GenerateFileParams):
-    origin_file = await get_or_404(database.File, id, "Файл не найден")
-    if params.origin_path not in origin_file.paths:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Невалидный путь к файлу"
-        )
+@router.post("/generate/", response_model=database.File, response_model_by_alias=False)
+async def generate_file_route(params: GenerateFileParams):
     file = await database.File(
-        **params.dict(), generation_status=GenerationStatus.processing
+        name="Auto generated",
+        paths=[],
+        origin_path=params.origin_path,
+        generation_status=GenerationStatus.processing,
+        generator_type=params.generator_type,
+        params=params.params,
     ).save()
-    generate_file.send(file.id)
+    generate_file.send(str(file.id))
     return file
 
 

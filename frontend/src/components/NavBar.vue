@@ -17,4 +17,7 @@ export default {};
 </script>
 
 <style>
+.v-app-bar-title__content {
+  width: 200px !important;
+}
 </style>

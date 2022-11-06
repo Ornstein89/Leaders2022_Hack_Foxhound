@@ -35,20 +35,26 @@ class Location(BaseModel):
     horizontal: HorizontalLocation
 
 
+class GeneratorType(str, Enum):
+    simple = "simple"
+    pix2pix = "pix2pix"
+
+
 class BaseFile(BaseModel):
     paths: list[str]
     name: Indexed(str, pymongo.TEXT)
     dttm_created: datetime = Field(default_factory=datetime.utcnow)
     dttm_updated: datetime = Field(default_factory=datetime.utcnow)
     preview: Optional[str]
-    origin_paths: Optional[list[str]]
+    origin_path: Optional[str]
     markup: Optional[dict]
     research_type: Optional[str]
     pathology: Optional[PathologyType]
-    generator_type: Optional[str]
+    generator_type: Optional[GeneratorType]
     size: Optional[int]
     location: Optional[Location]
     generation_status: Optional[GenerationStatus]
+    generation_params: Optional[dict]
 
     class Settings:
         name = "file_collection"

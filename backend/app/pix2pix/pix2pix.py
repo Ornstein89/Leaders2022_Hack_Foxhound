@@ -1,35 +1,38 @@
-import SimpleITK as sitk
-import albumentations as A
-from skimage.transform import resize
 import os
-import numpy as np 
+
+import albumentations as A
+import numpy as np
+import SimpleITK as sitk
 from lungmask import mask as unet_mask
+from skimage.transform import resize
 from tensorflow.keras.models import model_from_json
 from utils import *
 
+
 class Pix2Pix:
     """Модель использующая pix2pix архитектуру для генерации по скетчу с лёгким изображения.
-    
+
     Args:
         model_h5_path : str : путь к файлу с весами, расширения h5
         model_json_path : str : путь к файлу с метаданными модели, расширения json
         original_masks_dir : str : путь к папке с масками, у всех файлов в папке должно быть расширение nii
     Methods:
         inference : открывает dicom файлы (N, H, W) и генерирует по нему, возвращая КТ-скан (N, H, W) и маску (N, H, W)
-        ... 
+        ...
     """
+
     def __init__(self, model_h5_path, model_json_path, original_masks_dir) -> None:
         self.W = 512
         self.H = 512
-        with open(model_json_path, 'r') as f:
+        with open(model_json_path, "r") as f:
             self.model = model_from_json(f.read())
         self.model.load_weights(model_h5_path)
         self.original_masks_dir = original_masks_dir
-    
+
     def inference(self, dicom_path, original_mask=None):
-        """Открывает dicom файлы (N, H, W) и генерирует по нему, возвращая 
+        """Открывает dicom файлы (N, H, W) и генерирует по нему, возвращая
         сгенерированный КТ-скан (N, H, W) и маску (N, H, W).
-        
+
         Args:
             dicom_path : str : путь к папке с dicom файлами.
             original_mask : ndarray : размер (K, 512, 512), куб с масками по которые будут браться для модели.
@@ -46,15 +49,14 @@ class Pix2Pix:
         if original_mask is not None:
             original_mask = read_image(original_mask)
         else:
-            original_mask = self.get_random_original_mask(
-                self.original_masks_dir)
-        
-        sketch, gen_masks = self.generate_sketch(
-            image, lung, original_mask)
+            original_mask = self.get_random_original_mask(self.original_masks_dir)
+
+        sketch, gen_masks = self.generate_sketch(image, lung, original_mask)
 
         pred = self.multi_prediction(sketch, self.model)
         rec_gen, rec_masks = self.recover_synthetic_image(
-            pred, normalize(image), lung, gen_masks, self.get_masked_layers(lung))
+            pred, normalize(image), lung, gen_masks, self.get_masked_layers(lung)
+        )
 
         norm_rec_gen = unnormalize(rec_gen, np.min(image), np.max(image))
         rec_masks = self.get_lung(rec_masks, lung)
@@ -67,16 +69,16 @@ class Pix2Pix:
     def normalize_nn(self, input_image):
         input_image = (input_image / 127.5) - 1
         return input_image
-    
+
     def unnormalize_nn(self, x):
-        return (1 + x)/2
+        return (1 + x) / 2
 
     # ---------------------
     # Generate sketch
     # ---------------------
 
     def segmentation_lung(self, SimpleITK_image):
-        model = unet_mask.get_model('unet', "LTRCLobes" )
+        model = unet_mask.get_model("unet", "LTRCLobes")
         segmentation = unet_mask.apply(SimpleITK_image, model)
         return segmentation
 
@@ -94,11 +96,21 @@ class Pix2Pix:
         return not_empty_layers
 
     def generate_slice_sketch(self, cropped_lung, original_mask=None):
-        aug = A.OneOf([
-            A.GridDistortion(p=0.5),
-            A.ElasticTransform(alpha=120, sigma=120*.13, alpha_affine=120*.1, border_mode=0, p=.2),
-            A.OpticalDistortion(distort_limit=.7, shift_limit=.4, border_mode=0, p=.3)
-        ])
+        aug = A.OneOf(
+            [
+                A.GridDistortion(p=0.5),
+                A.ElasticTransform(
+                    alpha=120,
+                    sigma=120 * 0.13,
+                    alpha_affine=120 * 0.1,
+                    border_mode=0,
+                    p=0.2,
+                ),
+                A.OpticalDistortion(
+                    distort_limit=0.7, shift_limit=0.4, border_mode=0, p=0.3
+                ),
+            ]
+        )
 
         augmented = aug(image=original_mask, mask=original_mask)
 
@@ -107,7 +119,7 @@ class Pix2Pix:
 
         new_image = np.copy(cropped_lung)
         new_image[np.repeat(mask[:, :, 1][..., np.newaxis], 3, axis=2) > 0] = 0
-        new_image += np.uint8(mask*255) * (cropped_lung > 0)
+        new_image += np.uint8(mask * 255) * (cropped_lung > 0)
 
         return new_image, augmented["mask"]
 
@@ -131,7 +143,7 @@ class Pix2Pix:
             sektches.append(sketch)
             gen_masks.append(gen_mask)
         return sektches, gen_masks
-    
+
     # ---------------------
     # Prediction
     # ---------------------
@@ -140,7 +152,7 @@ class Pix2Pix:
         im = np.expand_dims(im, axis=0)
         pred = model(im, training=True)
         return self.unnormalize_nn(pred.numpy())
-    
+
     def multi_prediction(self, imgs, model):
         results = []
         for img in imgs:
@@ -152,9 +164,10 @@ class Pix2Pix:
     # ---------------------
     def lung_with_bg(self, image, synthetic, lung_mask):
         return image * (1 - (lung_mask > 0)) + synthetic
-    
 
-    def recover_synthetic_image(self, gen_image, source_image, source_lung, gen_masks, gen_layers):
+    def recover_synthetic_image(
+        self, gen_image, source_image, source_lung, gen_masks, gen_layers
+    ):
         images = []
         masks = []
         start_size = source_image.shape[1:][::-1]
@@ -165,7 +178,10 @@ class Pix2Pix:
                 g_im = rgb2gray(g_im)
                 reconstuct_gen_image = resize(g_im, start_size)
                 images.append(
-                    self.lung_with_bg(source_image[i], reconstuct_gen_image, source_lung[i])[np.newaxis])
+                    self.lung_with_bg(
+                        source_image[i], reconstuct_gen_image, source_lung[i]
+                    )[np.newaxis]
+                )
                 masks.append(gen_masks[j][np.newaxis, ...])
                 j += 1
             else:

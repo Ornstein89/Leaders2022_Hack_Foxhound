@@ -4,7 +4,7 @@ from typing import Optional
 from beanie import PydanticObjectId
 from pydantic import BaseModel, Field
 
-from app.database.file import GenerationStatus, Location, PathologyType
+from app.database.file import GenerationStatus, GeneratorType
 
 
 class FileList(BaseModel):
@@ -20,11 +20,8 @@ class FileList(BaseModel):
 
 class GenerateFileParams(BaseModel):
     origin_path: str
-    research_type: Optional[str]
-    pathology: Optional[PathologyType]
-    generator_type: Optional[str]
-    size: Optional[int]
-    location: Optional[Location]
+    generator_type: GeneratorType
+    params: dict
 
 
 class GenerationFileStatus(BaseModel):

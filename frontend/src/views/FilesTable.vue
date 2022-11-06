@@ -60,7 +60,15 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon @click="viewGenerate(item)" v-bind="attrs" v-on="on">
+            <v-btn
+              icon
+              @click="viewGenerate(item)"
+              v-bind="attrs"
+              v-on="on"
+              :disabled="
+                item.generation_status && item.generation_status != 'ready'
+              "
+            >
               <v-icon> mdi-autorenew </v-icon>
             </v-btn>
           </template>
@@ -79,9 +87,7 @@
       <template v-slot:item.origin_path="{ item }">
         <v-icon class="mr-2" :color="item.origin_path ? 'green' : 'red'">
           {{
-            item.origin_path
-              ? "mdi-checkbox-marked-circle"
-              : "mdi-close-circle"
+            item.origin_path ? "mdi-checkbox-marked-circle" : "mdi-close-circle"
           }}
         </v-icon>
       </template>
@@ -184,6 +190,13 @@ export default {
       this.items = [];
     },
     viewAndLabeling(item) {
+      if (item.generation_status == "processing") {
+        this.$router.push({
+          name: "ViewGeneration",
+          params: { id: item.id },
+        });
+        return;
+      }
       this.$router.push({
         name: "ViewLabeling",
         params: { id: item.id },
