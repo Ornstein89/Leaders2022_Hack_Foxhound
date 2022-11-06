@@ -29,7 +29,7 @@ def generate_file(_id: str):
                 "/data/generator.h5", "/data/generator.json", "/data/masks/"
             )
             result, _ = generator.inference(file.origin_path)
-            result_path = file_service.save_file_sync(slice2rgb(result), ext=".png")
+            result_path = file_service.save_file_sync(slice2rgb(result[0]), ext=".png")
             preview = result_path
         elif file.generator_type == GeneratorType.simple:
             from app.generator_simple import generate_simple_dcm_file
