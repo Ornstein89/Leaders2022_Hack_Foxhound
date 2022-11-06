@@ -1,4 +1,6 @@
 import os
+import shutil
+from tempfile import TemporaryDirectory
 
 import albumentations as A
 import numpy as np
@@ -44,7 +46,10 @@ class Pix2Pix:
             norm_rec_gen : ndarray[N, H, W] : КТ-скан со сгенерированными поверх него поражениями COVID.
             rec_masks : ndarray[N, H, W] : Маска это КТ-снимка с поражениями.
         """
-        image = load_dicom(dicom_path)
+        with TemporaryDirectory() as tmp_dir:
+            path = os.path.join(tmp_dir, "file.dcm")
+            shutil.copyfile(dicom_path, path)
+            image = load_dicom(path)
         lung = self.segmentation_lung(image)
 
         image = sitk.GetArrayFromImage(image)

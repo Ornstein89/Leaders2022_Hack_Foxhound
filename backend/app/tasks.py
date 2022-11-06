@@ -9,6 +9,7 @@ from app.config import settings
 from app.database import FileSync, init_sync_db
 from app.database.file import GenerationStatus, GeneratorType
 from app.services import FileService
+from app.services.make_dicom_thumbnail import make_dicom_thumbnail
 
 dramatiq.set_broker(RabbitmqBroker(url=settings.broker_uri))
 init_sync_db()
@@ -23,7 +24,6 @@ def generate_file(_id: str):
     try:
         if file.generator_type == GeneratorType.pix2pix:
             from app.pix2pix.pix2pix import Pix2Pix
-            print(file.origin_path)
 
             generator = Pix2Pix(
                 "/data/generator.h5", "/data/generator.json", "/data/masks/"
@@ -39,6 +39,9 @@ def generate_file(_id: str):
                 file.generation_params["y_px"],
                 file.generation_params["width_px"],
                 file.generation_params["height_px"],
+            )
+            file.preview = file_service.save_file_sync(
+                make_dicom_thumbnail(result_path, (128, 128)), ext=".png"
             )
 
         file.paths = [result_path]

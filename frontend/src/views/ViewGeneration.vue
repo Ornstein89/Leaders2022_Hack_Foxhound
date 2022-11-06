@@ -435,7 +435,6 @@ export default {
         },
       });
       if (response.status == 200) {
-        this.reset();
         this.$router.replace({
           name: "ViewGeneration",
           params: { id: response.data.id },
@@ -466,7 +465,6 @@ export default {
         },
       });
       if (response.status == 200) {
-        this.reset();
         this.$router.replace({
           name: "ViewGeneration",
           params: { id: response.data.id },
@@ -508,7 +506,8 @@ export default {
         tools: this.tools,
       });
       if (this.file.paths.length) this.dwvApp.loadURLs(this.file.paths);
-      else this.longPoolingInterval = setInterval(this.checkStatus, 2000);
+      else if (this.longPoolingInterval == null)
+        this.longPoolingInterval = setInterval(this.checkStatus, 2000);
     },
   },
 
@@ -638,6 +637,7 @@ export default {
         })
       ).data;
       this.status = this.file.generation_status;
+      this.reset();
     },
     toggle_view: function (tool) {
       if (this.toggle_view_flag) {
