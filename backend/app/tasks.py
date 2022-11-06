@@ -23,6 +23,7 @@ def generate_file(_id: str):
     try:
         if file.generator_type == GeneratorType.pix2pix:
             from app.pix2pix.pix2pix import Pix2Pix
+            print(file.origin_path)
 
             generator = Pix2Pix(
                 "/data/generator.h5", "/data/generator.json", "/data/masks/"

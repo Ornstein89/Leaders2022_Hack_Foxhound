@@ -260,7 +260,9 @@ def generate_simple_dcm_file(filename: str, x, y, width, height) -> str:
     dicom_file = dcmread(filename)
 
     # наложение новообразования
-    result = add_nodule(dicom_file.pixel_array, coord=(x, y), size=(width, height))
+    result = add_nodule(
+        dicom_file.pixel_array.astype(np.int16), coord=(x, y), size=(width, height)
+    )
     # сохранение в new_file_name
     new_file_name = FileService.generate_file_path()
     newfileMeta = pydicom.Dataset()
