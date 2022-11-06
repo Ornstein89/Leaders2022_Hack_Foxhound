@@ -23,13 +23,15 @@ def generate_file(_id: str):
     try:
         if file.generator_type == GeneratorType.pix2pix:
             from app.pix2pix.pix2pix import Pix2Pix
-            from app.pix2pix.utils import slice2rgb
+            from app.pix2pix.utils import slice2rgb, slice2dicom
 
             generator = Pix2Pix(
                 "/data/generator.h5", "/data/generator.json", "/data/masks/"
             )
             result, _ = generator.inference(file.origin_path)
-            result_path = file_service.save_file_sync(slice2rgb(result[0]), ext=".png")
+            result_path = file_service.save_file_sync(
+                slice2dicom(result[0], original_path=file.origin_path), ext=".png"
+            )
             preview = result_path
         elif file.generator_type == GeneratorType.simple:
             from app.generator_simple import generate_simple_dcm_file

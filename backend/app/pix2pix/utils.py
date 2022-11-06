@@ -1,8 +1,12 @@
 import cv2
 import numpy as np
+import pydicom
 import SimpleITK as sitk
 from PIL import Image
+from pydicom import dcmread
 from skimage.transform import resize
+
+from app.services.file import FileService
 
 
 def normalize(x):
@@ -23,6 +27,34 @@ def slice2rgb(image, normalize_data=True):
     image *= 255
     image = np.dstack((image, image, image)).astype(np.uint8)
     return Image.fromarray(image)
+
+
+def slice2dicom(image, original_path, normalize_data=True):
+    """Slice of scan -> DICOM file"""
+    dicom_file = dcmread(original_path)
+    image = image.astype(np.float32)
+    image = normalize(image) if normalize_data else image
+    image *= 255
+    image = np.dstack((image, image, image)).astype(np.uint8)
+    new_file_name = FileService.generate_file_path()
+    newds = pydicom.Dataset()
+    newds.file_meta = dicom_file.file_meta
+
+    newds.Rows = image.shape[0]
+    newds.Columns = image.shape[1]
+    newds.NumberOfFrames = 1
+
+    newds.PixelSpacing = dicom_file.PixelSpacing  # in mm
+    newds.SliceThickness = dicom_file.SliceThickness  # in mm
+
+    newds.BitsAllocated = dicom_file.BitsAllocated
+    newds.PixelRepresentation = dicom_file.PixelRepresentation
+    newds.SamplesPerPixel = dicom_file.SamplesPerPixel
+    newds.PhotometricInterpretation = dicom_file.PhotometricInterpretation
+    newds.BitsStored = dicom_file.BitsStored
+    newds.PixelData = image.tobytes()
+    newds.save_as(new_file_name, write_like_original=False)
+    return new_file_name
 
 
 def mask2blue(mask):
