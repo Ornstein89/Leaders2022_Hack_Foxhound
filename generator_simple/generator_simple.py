@@ -160,25 +160,51 @@ def add_nodule(src, coord=(150, 250), size=(100,100)):
         size - размеры узла, пиксели, (ширина, высота)
     """
     
+def add_nodule(src, coord=(150, 250), size=(100,100)):
+    """
+    Args:
+        src - исходное изображение (numpy array)
+        coord - координаты (x, y) центра узла, пиксели, от левого верхнего угла
+        size - размеры узла, пиксели, (ширина, высота)
+    """
+    wc = 0 # центр окна яркости опухоли
+    ww = 1500  # ширина окна яркости опухоли
+    image_shift = src.min()
+    # print("image_shift = ", image_shift)
+    image_begin =  wc - ww / 2
+    image_end =  wc + ww / 2
+    
     random_contour_nparray = filled_random_contour(n=7, scale = 1, rad = 0.2, edgy = 0.05)
+    orig_shape = random_contour_nparray.shape
     # plt.figure()
     # plt.imshow(random_contour_nparray, cmap=plt.cm.gray)
     GRF_mask_nparray = create_GRF_mask(random_contour_nparray.shape, rng = (0.1,10.0), scale = 50)
     random_contour_blurred_diplib = dip.AdaptiveGauss(random_contour_nparray, [0, GRF_mask_nparray], sigmas=[11])
-    random_contour_blurred_array = np.asarray(random_contour_blurred_diplib, dtype=np.uint8)
+    random_contour_blurred_array = np.asarray(random_contour_blurred_diplib, dtype=np.int16)
+    # print("blurred = ", random_contour_blurred_array.min(), random_contour_blurred_array.max())
+    random_contour_blurred_array = random_contour_blurred_array.flatten()
+    # print("flatten = ", random_contour_blurred_array.min(), random_contour_blurred_array.max())
+    random_contour_blurred_array = minmax_scale(random_contour_blurred_array, feature_range=(0, ww))
+    # print("minmax_scale = ", random_contour_blurred_array.min(), random_contour_blurred_array.max())
+    random_contour_blurred_array = random_contour_blurred_array.reshape(orig_shape).astype(dtype=np.int16)
+    # print("reshape = ", random_contour_blurred_array)
     #TODO вписать сгенерированный контур в size
-    random_contour_blurred_array = np.invert(random_contour_blurred_array)
-    ret,alpha_mask = cv2.threshold(random_contour_blurred_array,1,255,cv2.THRESH_BINARY)
+    # random_contour_blurred_array = np.invert(random_contour_blurred_array)
+    random_contour_blurred_array = random_contour_blurred_array.max() - random_contour_blurred_array
+    # print("2 = ", random_contour_blurred_array)
+    # ret,alpha_mask = cv2.threshold(random_contour_blurred_array,1,255,cv2.THRESH_BINARY)
     random_contour_resized = cv2.resize(random_contour_blurred_array, size, interpolation = cv2.INTER_AREA)
-    random_contour_resized = np.array(0.9 * random_contour_resized, dtype=np.uint8)
-    alpha_mask_resized = cv2.threshold(cv2.resize(alpha_mask, size, interpolation = cv2.INTER_AREA),1,255,cv2.THRESH_BINARY)
-    
+    # print("3 = ", random_contour_resized)
+    random_contour_resized = np.array(0.9 * random_contour_resized, dtype = np.int16)
+    # print("4 = ", random_contour_resized)
+    # alpha_mask_resized = cv2.threshold(cv2.resize(alpha_mask, size, interpolation = cv2.INTER_AREA),1,255,cv2.THRESH_BINARY)
+    src = src + np.abs(image_shift)
     roi = src[coord[1]:coord[1]+size[1], coord[0]:coord[0]+size[0]]
     dst = cv2.add(roi,random_contour_resized)
     src[coord[1]:coord[1]+size[1], coord[0]:coord[0]+size[0]] = dst
     # cv.bitwise_and(src[],random_contour_resized,mask = alpha_mask_resized)
     result = None
-    return src
+    return src - np.abs(image_shift)
 
 def image_from_dicom(filename, wc = 0, ww = 1500, dtype=np.uint8):
     dicom_file = dcmread(filename)
@@ -206,6 +232,32 @@ def image_from_dicom(filename, wc = 0, ww = 1500, dtype=np.uint8):
 
 if __name__=="__main__":
     filename = "1-18.dcm"
-    displayed_matrix_8bit = image_from_dicom(filename=filename, wc=0)
-    result = add_nodule(displayed_matrix_8bit)
+    dicom_file = dcmread(filename)
+    
+    # наложение новообразования
+    # параметры coord=(150, 250), size=(100, 100) - из параметров API-запроса
+    result = add_nodule(dicom_file.pixel_array, coord=(150, 250), size=(100, 100))
     print(result)
+    # сохранение в new_file_name
+    new_file_name = 'newimage.dcm'
+    newfileMeta = pydicom.Dataset()
+    
+    newfileMeta = dicom_file.file_meta
+
+    newds = pydicom.Dataset()
+    newds.file_meta = newfileMeta
+
+    newds.Rows = result.shape[0]
+    newds.Columns = result.shape[1]
+    newds.NumberOfFrames = 1
+
+    newds.PixelSpacing = dicom_file.PixelSpacing # in mm
+    newds.SliceThickness = dicom_file.SliceThickness # in mm
+
+    newds.BitsAllocated = dicom_file.BitsAllocated
+    newds.PixelRepresentation = dicom_file.PixelRepresentation
+    newds.SamplesPerPixel = dicom_file.SamplesPerPixel
+    newds.PhotometricInterpretation = dicom_file.PhotometricInterpretation
+    newds.BitsStored = dicom_file.BitsStored
+    newds.PixelData = result.tobytes()
+    newds.save_as(new_file_name, write_like_original=False)
