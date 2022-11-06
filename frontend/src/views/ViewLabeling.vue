@@ -761,9 +761,13 @@ export default {
     console.log("dwv = ", dwv);
     console.log("dwvApp = ", this.dwvApp);
     // this.dwvApp.loadURLs([this.file.path]); //XXX для отладки загрузка из URL
-    this.dwvApp.loadURLs(["1-14.dcm", "1-15.dcm", "1-16.dcm"]);
+    // this.dwvApp.loadURLs(["1-14.dcm", "1-15.dcm", "1-16.dcm"]);
 
-  //TODO загрузка по this.$route.params.id
+
+    // загрузка по this.$route.params.id
+
+    this.dwvApp.loadURLs(this.file.paths); // для отладки загрузка из URL
+
   },
   computed: {},
   watch: {

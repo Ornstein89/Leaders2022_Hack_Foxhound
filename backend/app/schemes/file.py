@@ -12,4 +12,4 @@ class FileList(BaseModel):
     dttm_created: datetime
     dttm_updated: datetime
     is_marked_up: bool
-    origin_path: Optional[str]
+    origin_paths: Optional[list[str]]

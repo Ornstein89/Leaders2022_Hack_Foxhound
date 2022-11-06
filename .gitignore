@@ -7,3 +7,8 @@ data
 __pycache__
 media
 db.sqlite3
+
+.vscode
+
+# Python
+env
