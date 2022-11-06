@@ -22,6 +22,7 @@ def slice2rgb(image, normalize_data=True):
     image = normalize(image) if normalize_data else image
     image *= 255
     image = np.dstack((image, image, image)).astype(np.uint8)
+    print(image)
     return Image.fromarray(image)
 
 
