@@ -434,7 +434,7 @@ export default {
     // possible load from location
     dwv.utils.loadFromUri(window.location.href, this.dwvApp);
 
-    this.dwvApp.loadURLs([this.file.path]); // для отладки загрузка из URL
+    this.dwvApp.loadURLs(this.file.paths); // для отладки загрузка из URL
     //TODO загрузка по this.$route.params.id
   },
   computed: {},

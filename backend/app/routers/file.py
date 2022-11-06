@@ -52,6 +52,6 @@ async def get_file_markup(id: PydanticObjectId):
 
 @router.post("/", response_model=database.File, response_model_by_alias=False)
 async def create_file(
-    file: UploadFile, name: str = Body(), file_service: FileService = Depends()
+    files: list[UploadFile], name: str = Body(), file_service: FileService = Depends()
 ):
-    return await file_service.create(file, name)
+    return await file_service.create(files, name)

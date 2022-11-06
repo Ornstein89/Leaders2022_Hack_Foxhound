@@ -1,9 +1,11 @@
-from typing import Optional
+from typing import Optional, Union
 from uuid import uuid4
+import inspect
 
 import aiofiles
 from beanie.odm.operators.find.evaluation import RegEx
 from fastapi import HTTPException, UploadFile, status
+from PIL.Image import Image
 
 from app import database
 from app.schemes.file import FileList
@@ -13,20 +15,25 @@ ORDER_FIELDS = {"dttm_updated", "dttm_created", "name"}
 
 
 class FileService:
-    def generate_file_path(self) -> str:
-        return f"./media/files/{uuid4()}"
+    async def save_file(self, file: Union[UploadFile, Image], ext="") -> str:
+        path = f"./media/files/{uuid4()}" + ext
+        if isinstance(file, Image):
+            file.save(path)
+        elif inspect.iscoroutinefunction(file.read):
+            async with aiofiles.open(path, "wb") as f:
+                await f.write(await file.read())
+        else:
+            with open(path, "wb") as f:
+                f.write(file.read())
+        return path
 
-    async def create(self, file: UploadFile, name: str) -> database.File:
-        path = self.generate_file_path()
-        async with aiofiles.open(path, "wb") as f:
-            content = await file.read()
-            await f.write(content)
+    async def create(self, files: list[UploadFile], name: str) -> database.File:
+        paths = [await self.save_file(file) for file in files]
         preview_path = None
-        preview = make_dicom_thumbnail(path, (128, 128))
+        preview = make_dicom_thumbnail(paths[0], (128, 128))
         if preview is not None:
-            preview_path = self.generate_file_path() + ".png"
-            preview.save(preview_path)
-        return await database.File(path=path, name=name, preview=preview_path).save()
+            preview_path = await self.save_file(preview, ".png")
+        return await database.File(paths=paths, name=name, preview=preview_path).save()
 
     def get_sort(self, field: str) -> dict[str, int]:
         desc = 1

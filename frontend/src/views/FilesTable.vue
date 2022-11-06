@@ -54,10 +54,12 @@
           }}
         </v-icon>
       </template>
-      <template v-slot:item.origin_path="{ item }">
-        <v-icon class="mr-2" :color="item.origin_path ? 'green' : 'red'">
+      <template v-slot:item.origin_paths="{ item }">
+        <v-icon class="mr-2" :color="item.origin_paths ? 'green' : 'red'">
           {{
-            item.origin_path ? "mdi-checkbox-marked-circle" : "mdi-close-circle"
+            item.origin_paths
+              ? "mdi-checkbox-marked-circle"
+              : "mdi-close-circle"
           }}
         </v-icon>
       </template>
@@ -102,7 +104,7 @@ export default {
         },
         {
           text: "Сгенерирован системой",
-          value: "origin_path",
+          value: "origin_paths",
           align: "center",
           sortable: false,
         },

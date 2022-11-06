@@ -11,10 +11,13 @@
         />
         <v-file-input
           accept=".dcm"
-          label="DICOM файл"
+          label="DICOM файлы"
           :rules="rules"
-          v-model="file"
+          v-model="files"
           :loading="loading"
+          multiple
+          show-size
+          counter
         />
         <v-btn :disabled="!valid" @click="load" :loading="loading"
           >Загрузить</v-btn
@@ -33,7 +36,7 @@ export default Vue.extend({
     return {
       valid: false,
       rules: [required],
-      file: null,
+      files: [],
       loading: false,
       name: "",
     };
@@ -41,10 +44,10 @@ export default Vue.extend({
   methods: {
     ...mapMutations(["showSnackbar"]),
     async load() {
-      if (!this.file) return;
+      if (!this.files.length) return;
       this.loading = true;
       const form = new FormData();
-      form.append("file", this.file);
+      for (const file of this.files) form.append("files", file);
       form.append("name", this.name);
       try {
         const response = await axios.post("/api/files/", form);
