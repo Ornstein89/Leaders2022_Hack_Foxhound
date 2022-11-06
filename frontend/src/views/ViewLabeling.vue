@@ -14,7 +14,10 @@
         <v-spacer vertical></v-spacer>
         <v-tooltip right>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ma-1" tile elevation="0"
+            <v-btn
+              class="ma-1"
+              tile
+              elevation="0"
               outlined
               @click="onReset"
               v-bind="attrs"
@@ -23,16 +26,15 @@
               <v-icon>mdi-border-radius</v-icon>
             </v-btn>
           </template>
-          <span>
-            Сброс параметров вида
-          </span>
+          <span> Сброс параметров вида </span>
         </v-tooltip>
 
         <v-btn-toggle v-model="toggle_view" style="flex-direction: column" tile>
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
-                class="ma-1" :value="'ZoomAndPan'"
+                class="ma-1"
+                :value="'ZoomAndPan'"
                 v-bind="attrs"
                 v-on="on"
               >
@@ -40,24 +42,22 @@
               </v-btn>
             </template>
             <span>
-              Увеличение и пролистывание<br>
-              увеличение - колесо мыши<br>
+              Увеличение и пролистывание<br />
+              увеличение - колесо мыши<br />
               пролистывание - зажать левую клавишу мыши и двигать курсором
             </span>
           </v-tooltip>
 
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ma-1" :value="'Scroll'"
-                v-bind="attrs"
-                v-on="on"
-              >
+              <v-btn class="ma-1" :value="'Scroll'" v-bind="attrs" v-on="on">
                 <v-icon>mdi-layers-triple-outline</v-icon>
               </v-btn>
             </template>
             <span>
-              Пролистывание слоёв DICOM<br>
-              пролистывание - зажать левую клавишу мыши и вести курсором вертикально<br>
+              Пролистывание слоёв DICOM<br />
+              пролистывание - зажать левую клавишу мыши и вести курсором
+              вертикально<br />
               автопролистывание - двойное нажатие левой клавиши мыши
             </span>
           </v-tooltip>
@@ -74,68 +74,63 @@
               </v-btn>
             </template>
             <span>
+              <p class="font-italic">Яркость и контраст<br /></p>
               <p class="font-italic">
-                Яркость и контраст<br>
-              </p>
-              <p class="font-italic">
-                передвигайте мышь с зажатой левой клавишей<br>
-                по горизонтали - контраст<br>
-                по вертикали - яркость<br>
+                передвигайте мышь с зажатой левой клавишей<br />
+                по горизонтали - контраст<br />
+                по вертикали - яркость<br />
                 двойное нажатие - автонастройка по выбранному пикселю
               </p>
             </span>
           </v-tooltip>
-
         </v-btn-toggle>
 
-        <v-menu
-            top
-            :close-on-click="true"
-            :nudge-width="100"
-            offset-x
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ma-1"
-              tile elevation="0"
-                outlined
-                v-bind="attrs"
-                v-on="on"
-              >
-                <v-icon>mdi-form-dropdown</v-icon>
-              </v-btn>
-            </template>
+        <v-menu top :close-on-click="true" :nudge-width="100" offset-x>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              tile
+              elevation="0"
+              outlined
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-form-dropdown</v-icon>
+            </v-btn>
+          </template>
 
-            <v-list dense>
-              <v-list-item-group
-                v-model="selectedStndardWindow"
-                color="primary"
-              >
-              <v-list-item
-                v-for="(item, index) in presetNames"
-                :key="index"
-              >
-                <v-list-item-title
-                  
-                  @click="onSetPreset(item)">
+          <v-list dense>
+            <v-list-item-group v-model="selectedStndardWindow" color="primary">
+              <v-list-item v-for="(item, index) in presetNames" :key="index">
+                <v-list-item-title @click="onSetPreset(item)">
                   {{ item }}
                 </v-list-item-title>
               </v-list-item>
             </v-list-item-group>
-            </v-list>
-          </v-menu>
+          </v-list>
+        </v-menu>
 
-        <v-btn-toggle v-model="infoControllerVisible" style="flex-direction: column" tile>
+        <v-btn-toggle
+          v-model="infoControllerVisible"
+          style="flex-direction: column"
+          tile
+        >
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ma-1" tile elevation="0"
+              <v-btn
+                class="ma-1"
+                tile
+                elevation="0"
                 :value="true"
-                v-bind="attrs" v-on="on"
+                v-bind="attrs"
+                v-on="on"
               >
-              <v-icon>mdi-information-outline</v-icon>
+                <v-icon>mdi-information-outline</v-icon>
               </v-btn>
             </template>
-            <span>Включение и выключение<br>
-              слоя с информацией<br>
+            <span
+              >Включение и выключение<br />
+              слоя с информацией<br />
               (в разработке)
             </span>
           </v-tooltip>
@@ -251,36 +246,41 @@
 
           <v-tooltip left>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn class="ma-1" :value="'Livewire'"
-                v-bind="attrs" v-on="on"
-              >
+              <v-btn class="ma-1" :value="'Livewire'" v-bind="attrs" v-on="on">
                 <v-icon>mdi-draw</v-icon>
               </v-btn>
             </template>
             <span>Автоконтур</span>
           </v-tooltip>
-
         </v-btn-toggle>
 
         <v-tooltip left>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ma-1" tile elevation="0"
+            <v-btn
+              class="ma-1"
+              tile
+              elevation="0"
               @click="onContoursSave"
-              v-bind="attrs" v-on="on"
+              v-bind="attrs"
+              v-on="on"
             >
               <v-icon>mdi-content-save</v-icon>
             </v-btn>
           </template>
-          <span>Сохранить разметку<br>на сервере</span>
+          <span>Сохранить разметку<br />на сервере</span>
         </v-tooltip>
 
         <v-checkbox :label="'Авто'" class="text-center"></v-checkbox>
 
         <v-tooltip left>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ma-1" tile elevation="0"
+            <v-btn
+              class="ma-1"
+              tile
+              elevation="0"
               @click="onDownloadJsonClicked"
-              v-bind="attrs" v-on="on"
+              v-bind="attrs"
+              v-on="on"
             >
               <v-icon>mdi-download</v-icon>
             </v-btn>
@@ -290,7 +290,10 @@
 
         <v-tooltip left>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn class="ma-1" tile elevation="0"
+            <v-btn
+              class="ma-1"
+              tile
+              elevation="0"
               :loading="isSelecting"
               @click="handleFileImport"
               v-bind="attrs"
@@ -303,12 +306,12 @@
         </v-tooltip>
 
         <!-- компонент для загрузки файла JSON с разметкой -->
-        <input 
-            ref="uploader" 
-            class="d-none" 
-            type="file" 
-            @change="onFileChanged"
-        >
+        <input
+          ref="uploader"
+          class="d-none"
+          type="file"
+          @change="onFileChanged"
+        />
 
         <v-spacer vertical></v-spacer>
 
@@ -343,7 +346,7 @@
 <!-- <script type="text/javascript" src="../components/dwv-jqui/src/gui/infoController.js"></script>
 <script type="text/javascript" src="../components/dwv-jqui/src/gui/infoOverlay.js"></script> -->
 <script>
-// import http from "@/http"; //XXX  раскомментировать для перекладки страницы с тестовых данных на работу с сервом
+import http from "@/http";
 // import dwvVue from 'dwv';
 // import dwvVue from '../components/dwv';
 
@@ -383,12 +386,12 @@ dwv.image.decoderScripts = {
 dwv.tool.defaultpresets = {};
 
 dwv.tool.defaultpresets.CT = {
-    mediastinum: {center: 40, width: 400},
-    lung: {center: -500, width: 1500},
-    bone: {center: 500, width: 2000},
-    brain: {center: 40, width: 80},
-    head: {center: 90, width: 350}
-  };
+  mediastinum: { center: 40, width: 400 },
+  lung: { center: -500, width: 1500 },
+  bone: { center: 500, width: 2000 },
+  brain: { center: 40, width: 80 },
+  head: { center: 90, width: 350 },
+};
 
 export default {
   name: "ViewLabeling",
@@ -412,21 +415,18 @@ export default {
 
       dwvApp: null, // библиотека DWV
       infoController: null, // оверлей с информацией о снимке
-      infoControllerVisible : false, // состояние оверлея с информацией
+      infoControllerVisible: false, // состояние оверлея с информацией
       // standardWindows : ["Window1", "Window2", "Lung"],
-      selectedStndardWindow : null,
-      layergroup : null,
-      viewController : null,
-      presetNames : null, // пресеты по уровням яркости
-      drawColor : '#FF0000',
+      selectedStndardWindow: null,
+      layergroup: null,
+      viewController: null,
+      presetNames: null, // пресеты по уровням яркости
+      drawColor: "#FF0000",
 
       isSelecting: false, // для загрузки разметки в json
       selectedFile: null, // файл для загрузки разметки в json
-      
-      annotations:{
-        objects:[
-          {x:1,y:2},
-        ]}, // объекты разметки для перевода в JSON
+
+      annotations: {}, // объекты разметки для перевода в JSON
 
       // номенклатура инструментов https://github.com/ivmartel/dwv-jqui/blob/master/src/applauncher.js
       tools: {
@@ -450,10 +450,12 @@ export default {
       dropboxClassName: "dropBox",
       borderClassName: "dropBoxBorder",
       hoverClassName: "hover",
+      file: null,
     };
   },
   methods: {
-    onChangeTool: function (tool) { // при выборе инструмента разметки
+    onChangeTool: function (tool) {
+      // при выборе инструмента разметки
       this.selectedTool = tool;
       this.dwvApp.setTool(tool);
       this.dwvApp.setDrawLineColour(this.drawColor);
@@ -464,7 +466,7 @@ export default {
     },
 
     // рисование
-    onChangeShape: function (shape) { 
+    onChangeShape: function (shape) {
       if (this.dwvApp && this.selectedTool === "Draw") {
         this.dwvApp.setDrawShape(shape);
         this.dwvApp.setDrawLineColour(this.drawColor);
@@ -558,25 +560,35 @@ export default {
       }
     },
 
-    onContoursSave(){
+    onContoursSave() {
       this.annotations = this.dwvApp.getState();
       console.log("onContoursSave(): getState = ", this.annotations);
-      
+
       // this.annotations = this.dwvApp.getDrawDisplayDetails();
       // console.log("onContoursSave(): getDrawDisplayDetails = ", this.annotations);
-      
+
       // var y = this.dwvApp.getDrawStoreDetails();
       // console.log("onContoursSave(): getDrawStoreDetails = ", y);
       // var json = state.toJSON(app);
 
-      // XXX TODO сохранение JSON-разметки this.annotations в БД
+      http
+        .updateItem(`/api/files/${this.file.id}/markup/`, {
+          data: JSON.parse(this.annotations),
+          showSnackbar: true,
+        })
+        .then(() => {
+          this.$store.commit("showSnackbar", {
+            text: "Разметка успешно сохранена",
+          });
+        });
     },
 
-    onSetPreset(presetname){
+    onSetPreset(presetname) {
       this.dwvApp.setWindowLevelPreset(presetname);
     },
 
-    onDownloadJsonClicked(){ // закачка файла с разметкой
+    onDownloadJsonClicked() {
+      // закачка файла с разметкой
       this.saveTemplateAsFile("annotations.json", this.annotations);
     },
 
@@ -607,10 +619,14 @@ export default {
       this.isSelecting = true;
 
       // After obtaining the focus when closing the FilePicker, return the button state to normal
-      window.addEventListener('focus', () => {
-          this.isSelecting = false
-      }, { once: true });
-      
+      window.addEventListener(
+        "focus",
+        () => {
+          this.isSelecting = false;
+        },
+        { once: true }
+      );
+
       // Trigger click on the FileInput
       this.$refs.uploader.click();
     },
@@ -620,32 +636,39 @@ export default {
       // для восстановления разметки
 
       this.selectedFile = e.target.files[0];
-      
+
       // Do whatever you need with the file, liek reading it with FileReader
-      const file= e.target.files[0];
+      const file = e.target.files[0];
       console.log("selectedFile = ", file);
 
       let reader = new FileReader();
       reader.onload = (e) => {
-          this.selectedFile = e.target.result;
-          // This is a regular expression to identify carriage
-          // Returns and line breaks
-          // this.selectedFile = file_contents.split(/\r\n|\n/);
-          console.log("split = ", this.selectedFile);
-          console.log("typeof split = ", typeof(this.selectedFile));
-          var state = new dwv.io.State();
-          console.log("state = ", state);
-          // https://github.com/ivmartel/dwv/blob/develop/tests/state/state.test.js
-          var jsonData = state.fromJSON(e.target.result);
-          console.log("fromJSON = ", jsonData);
-          state.apply(this.dwvApp, jsonData);
+        this.selectedFile = e.target.result;
+        // This is a regular expression to identify carriage
+        // Returns and line breaks
+        // this.selectedFile = file_contents.split(/\r\n|\n/);
+        console.log("split = ", this.selectedFile);
+        console.log("typeof split = ", typeof this.selectedFile);
+        const state = new dwv.io.State();
+        console.log("state = ", state);
+        // https://github.com/ivmartel/dwv/blob/develop/tests/state/state.test.js
+        const jsonData = state.fromJSON(e.target.result);
+        console.log("fromJSON = ", jsonData);
+        state.apply(this.dwvApp, jsonData);
       };
       reader.onerror = (e) => alert(e.target.error.name);
       reader.readAsText(file);
     },
   },
 
-  mounted() {
+  async mounted() {
+    this.file = (
+      await http.getItem("File", {
+        id: this.$route.params.id,
+        showSnackbar: true,
+      })
+    ).data;
+    this.annotations = JSON.stringify(this.file.markup || {});
     // create app
     this.dwvApp = new dwv.App();
     console.log("mounted(): this.dwvApp = ", this.dwvApp);
@@ -704,7 +727,7 @@ export default {
     this.dwvApp.addEventListener("loadend", (/*event*/) => {
       if (nReceivedError) {
         this.loadProgress = 0;
-        alert("Received errors during load. Check log for details.");
+        // alert("Received errors during load. Check log for details.");
         // show drop box if nothing has been loaded
         if (!nLoadItem) {
           // this.showDropbox(true);
@@ -716,21 +739,21 @@ export default {
         // this.showDropbox(true);
       }
 
-      this.layergroup = 
-          this.dwvApp.getActiveLayerGroup();
-        this.viewController =
-          this.layergroup.getActiveViewLayer().getViewController();
-        this.presetNames =
-          this.viewController.getWindowLevelPresetsNames()
+      this.layergroup = this.dwvApp.getActiveLayerGroup();
+      this.viewController = this.layergroup
+        .getActiveViewLayer()
+        .getViewController();
+      this.presetNames = this.viewController.getWindowLevelPresetsNames();
 
+      console.log("layer group = ", this.layergroup);
+      console.log("viewController = ", this.viewController);
+      console.log("presetNames = ", this.presetNames);
 
-        console.log("layer group = ", this.layergroup);
-        console.log("viewController = ", this.viewController);
-        console.log("presetNames = ", this.presetNames);
-        
-        // dwv.setDrawLineColour('Red');
-        // console.log("layer group = ", this.dwvApp.getActiveLayerGroup());
-
+      const state = new dwv.io.State();
+      const jsonData = state.fromJSON(this.annotations);
+      state.apply(this.dwvApp, jsonData);
+      // dwv.setDrawLineColour('Red');
+      // console.log("layer group = ", this.dwvApp.getActiveLayerGroup());
     });
     this.dwvApp.addEventListener("loaditem", (event) => {
       ++nLoadItem;
@@ -739,7 +762,7 @@ export default {
       }
     });
     this.dwvApp.addEventListener("error", (/*event*/) => {
-      // console.error('load error', event)
+      console.error("load error", event);
       ++nReceivedError;
     });
     this.dwvApp.addEventListener("abort", (/*event*/) => {
@@ -760,14 +783,7 @@ export default {
     dwv.utils.loadFromUri(window.location.href, this.dwvApp);
     console.log("dwv = ", dwv);
     console.log("dwvApp = ", this.dwvApp);
-    // this.dwvApp.loadURLs([this.file.path]); //XXX для отладки загрузка из URL
-    // this.dwvApp.loadURLs(["1-14.dcm", "1-15.dcm", "1-16.dcm"]);
-
-
-    // загрузка по this.$route.params.id
-
-    this.dwvApp.loadURLs(this.file.paths); // для отладки загрузка из URL
-
+    this.dwvApp.loadURLs(this.file.paths);
   },
   computed: {},
   watch: {
@@ -788,7 +804,8 @@ export default {
       this.toggle_labeling_flag = true;
     },
 
-    toggle_labeling: function (shape) { // при выборе инструмента разметки
+    toggle_labeling: function (shape) {
+      // при выборе инструмента разметки
 
       if (this.toggle_labeling_flag) {
         this.toggle_labeling_flag = false;
