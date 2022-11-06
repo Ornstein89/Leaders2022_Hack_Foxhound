@@ -3,7 +3,6 @@ import traceback
 import dramatiq
 from beanie import PydanticObjectId
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
-from PIL.Image import fromarray
 
 from app.config import settings
 from app.database import FileSync, init_sync_db
@@ -24,12 +23,13 @@ def generate_file(_id: str):
     try:
         if file.generator_type == GeneratorType.pix2pix:
             from app.pix2pix.pix2pix import Pix2Pix
+            from app.pix2pix.utils import slice2rgb
 
             generator = Pix2Pix(
                 "/data/generator.h5", "/data/generator.json", "/data/masks/"
             )
             result, _ = generator.inference(file.origin_path)
-            result_path = file_service.save_file_sync(fromarray(result), ext=".png")
+            result_path = file_service.save_file_sync(slice2rgb(result), ext=".png")
             preview = result_path
         elif file.generator_type == GeneratorType.simple:
             from app.generator_simple import generate_simple_dcm_file
