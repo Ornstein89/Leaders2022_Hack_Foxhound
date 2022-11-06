@@ -30,12 +30,12 @@ class Location(BaseModel):
 
 
 class BaseFile(BaseModel):
-    path: str
+    paths: list[str]
     name: Indexed(str, pymongo.TEXT)
     dttm_created: datetime = Field(default_factory=datetime.utcnow)
     dttm_updated: datetime = Field(default_factory=datetime.utcnow)
     preview: Optional[str]
-    origin_path: Optional[str]
+    origin_paths: Optional[list[str]]
     markup: Optional[dict]
     research_type: Optional[str]
     pathology: Optional[PathologyType]
