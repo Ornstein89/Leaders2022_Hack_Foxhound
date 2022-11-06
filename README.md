@@ -7,7 +7,7 @@
 
 Управление |  Просмотр и разметка | Генерация
 --- | --- | ---
-![image](https://user-images.githubusercontent.com/26321368/200194372-6b0f8b56-dc9e-4c5f-a1c3-19ed21fcd327.png) | ![image](https://user-images.githubusercontent.com/26321368/200194531-c0895083-9349-4353-9403-5940f6e80a27.png) | ![image](https://user-images.githubusercontent.com/26321368/200194776-b6e852b7-0950-411c-923d-e1deacd0dd4b.png)
+![image](https://user-images.githubusercontent.com/26321368/200194372-6b0f8b56-dc9e-4c5f-a1c3-19ed21fcd327.png) | ![image](https://user-images.githubusercontent.com/26321368/200194825-3740e0ec-3ace-4e76-ad42-e575b9f8e7bf.png) | ![image](https://user-images.githubusercontent.com/26321368/200194776-b6e852b7-0950-411c-923d-e1deacd0dd4b.png)
 
 
 # Инструкция по запуску
