@@ -422,11 +422,11 @@ export default {
         },
       });
       if (response.status == 200) {
+        this.reset();
         this.$router.replace({
           name: "ViewGeneration",
           params: { id: response.data.id },
         });
-        await this.reset();
       }
     },
 
@@ -453,11 +453,11 @@ export default {
         },
       });
       if (response.status == 200) {
+        this.reset();
         this.$router.replace({
           name: "ViewGeneration",
           params: { id: response.data.id },
         });
-        await this.reset();
       }
     },
 
@@ -488,14 +488,7 @@ export default {
       this.toggle_labeling = undefined;
       this.toggle_view = undefined;
     },
-    async reset() {
-      this.file = (
-        await http.getItem("File", {
-          id: this.$route.params.id,
-          showSnackbar: true,
-        })
-      ).data;
-      this.status = this.file.generation_status;
+    reset() {
       this.dwvApp.reset();
       this.dwvApp.init({
         dataViewConfigs: { "*": [{ divId: "layerGroup0" }] },
@@ -624,6 +617,15 @@ export default {
     clearInterval(this.longPoolingInterval);
   },
   watch: {
+    async $route() {
+      this.file = (
+        await http.getItem("File", {
+          id: this.$route.params.id,
+          showSnackbar: true,
+        })
+      ).data;
+      this.status = this.file.generation_status;
+    },
     toggle_view: function (tool) {
       if (this.toggle_view_flag) {
         this.toggle_view_flag = false;
