@@ -8,10 +8,11 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
     ln -s /opt/poetry/bin/poetry && \
     poetry config virtualenvs.create false
 
+RUN python3 -m pip install tensorflow lungmask
+
 # Copy using poetry.lock* in case it doesn't exist yet
 COPY ./backend/pyproject.toml ./backend/poetry.lock* /app/
 
 RUN poetry install --no-root --no-dev
-RUN python3 -m pip install tensorflow lungmask
 
 COPY ./backend /app

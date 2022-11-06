@@ -1,3 +1,5 @@
+import traceback
+
 import dramatiq
 from beanie import PydanticObjectId
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
@@ -30,9 +32,10 @@ def generate_file(_id: str):
             file.paths = [result_path]
         elif file.generator_type == GeneratorType.simple:
             pass
-    except:
+    except Exception:
         file.generation_status = GenerationStatus.error
         file.save()
+        print(traceback.format_exc())
         return
 
     file.generation_status = GenerationStatus.ready
